@@ -1,4 +1,4 @@
-# Template project for Advanced Programming [![Slides and report render](../../actions/workflows/check-qmd-render.yaml/badge.svg)](../../actions/workflows/check-qmd-render.yaml)
+# Midterm project for Advanced Programming [![Slides and report render](../../actions/workflows/check-qmd-render.yaml/badge.svg)](../../actions/workflows/check-qmd-render.yaml)
 
 SN_AIchatbot_Physical_Activity project has the following files:
 
