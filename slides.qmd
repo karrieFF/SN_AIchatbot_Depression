@@ -1,58 +1,91 @@
 ---
-title: Simulate Social Network Intervention of Adopting AI Chatbots for Increasing Physical activity
-subtitle: For PHS 7045
-author: Lingyi Fu
-format: revealjs
-embed-resources: true
+title: "Simulate Social Network Intervention to Adopt AI Chatbots for Increasing Physical Activity"
+subtitle: "For PHS 7045"
+author: "Lingyi Fu"
+format: 
+  revealjs:
+    embed-resources: true
+    incremental: true     
+    slide-number: true      
+    transition: fade        
+    code-line-numbers: true
+    code-fold: true
+    smooth-scroll: true
+header-includes: |
+  <style>
+    h1.title { font-size: 60px; text-align: center; }  
+    h2.subtitle { font-size: 10px; text-align: center; } 
+    body { font-size: 24px; }  
+    pre { font-size: 18px; }
+    code { font-size: 16px; } 
+    ul, li { font-size: 35px; }
+  </style>
 ---
 
 ## Background
 
-### Adopt AI Chatbot for Increasing Physical Activity
+#### Adopt AI Chatbot for Increasing Physical Activity
 
+::: incremental
 -   Artificial intelligence (AI)-driven Chatbots (AI chatbots), developed using natural language processing techniques, are capable of conversing with humans in a natural language format.
 
 -   AI chatbots have been used to increase physical activity recently.
 
 -   The adoption of an AI Chatbot is a critical factor that influences the efficacy of using an AI chatbot to change health behaviors. A high adoption can promote health behavior change.
+:::
 
-### Diffusion of Innovation Theory
+------------------------------------------------------------------------
+
+## Diffusion of Innovation Theory
 
 -   Diffusion of Innovation (DOI) theory is a social science theory that explains how new ideas, products, or behaviors spread through a population over time.
 
+    ![](diffusion-of-innovation-theoretical%20framework2.jpg){width="480"}
+
+## Diffusion of Innovation Theory
+
 -   This theory emphasizes the effect of the **social networks** on the adoption of an innovation.
 
-    ![](images/clipboard-112471844.png){width="304"}
+    ![](images/clipboard-112471844.png){align="center" width="38%"}
 
-<https://researchfeatures.com/diffusion-innovations-within-social-networks/>
+    <https://researchfeatures.com/diffusion-innovations-within-social-networks/>
 
 -   It also describes five stages of the population adopting an innovation, including innovators, early adopters, early majority, late majority, and laggards.
 
-    ![](images/Diffusion%20process.png){width="499"}
+    ![](Theoretical%20diffusion%20process.png){width="485"}
+
+------------------------------------------------------------------------
 
 ## Project Aim
 
-Therefore, this project aims to simulate a social network intervention to understand how the social network affects an individual's adoption of an AI chatbot, thus influencing their behavior change. There are two main steps:
+This project aims to simulate a social network intervention to understand how the social network affects an individual's adoption of an AI chatbot, thus increasing their physical activity. There are two main steps:
 
--   **Q1. Simulate the Diffusion Process of Adopting an AI Chatbot Within the Social Network ( (Midterm Project)**
+-   **Step 1. Simulate the Diffusion Process of Adopting an AI Chatbot Within the Social Network.**
 
--   Q2. Simulate the percentage of people meeting the US PA guidelines in different stages of adopters and non-adopters. (We also need to consider the effect of different characteristics)
+-   Step 2. Explore the percentage of people meeting the US PA guidelines in different stages of adopters and non-adopters.
 
-## Solution for Q1
+------------------------------------------------------------------------
 
--   **Step 1. Simulate correlation matrix**
+## Details for Step 1
 
-    Simulate a correlation matrix among 25 nodes with the r2 value ranging from -1 to 1.
+::: incremental
+-   **Step 1-1. Simulate correlation matrix**
 
-    ```{r}
-    cormatrix <- matrix(runif(num_nodes^2, min = -1, max = 1), num_nodes) 
+    Simulate a correlation matrix among 25 nodes with the correlation coefficent ranging from -1 to 1.
+
+    ``` r
+    cormatrix <- matrix(runif(num_nodes^2, min = -1, max = 1), num_nodes)
     ```
+:::
 
--   **Step 2. Initialize network structure based on the adjacency matrix**
+------------------------------------------------------------------------
 
-    Create a network graph based on an adjacency matrix derived from the correlation matrix at the first step.
+::: incremental
+-   **Step 1-2. Initialize network structure based on the adjacency matrix**
 
-    ```{r}
+    Create a network graph based on an adjacency matrix derived from the correlation matrix.
+
+    ``` r
     cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)] #Make symmetric
     diag(cormatrix) <- 0 #set diag as 0
 
@@ -73,21 +106,25 @@ Therefore, this project aims to simulate a social network intervention to unders
     V(initial_graph)$size  <- 20
     V(initial_graph)$color <- "gray"
     V(initial_graph)$label.color <- "black"
-    #plot(initial_graph, layout = fixed_layout)
     ```
+:::
 
--   **Step 3. Calculate the centrality of each node**
+------------------------------------------------------------------------
+
+::: incremental
+-   **Step 1-3. Calculate the centrality of each node**
 
     Based on the simulated network, the centrality of each node in the network was calculated. The strength metric was used to determine the centrality, which represents the sum of weights that a given individual associate with other individuals.
 
-    ```{r}
+    ``` r
     node_strength <- strength(initial_graph, vids = V(initial_graph), mode = "all", weights = E(initial_graph)$weight)
-
     ```
+:::
 
-<!-- -->
+------------------------------------------------------------------------
 
--   **Step 4. Simulate diffusion process**
+::: incremental
+-   **Step 1-4. Simulate diffusion process**
 
     Lastly, the diffusion process was simulated. Based on DOI theory, there are five stages. For each stage, different individuals were assigned to adopt the technology based on two types of criteria.
 
@@ -96,72 +133,74 @@ Therefore, this project aims to simulate a social network intervention to unders
         -   These nodes were connected with the nodes at the prior stage;
 
         -   These nodes ranked in the top percentage of the adopter category for weight (e.g., 13.5% for early adopters).
+:::
 
-            ```{r}
-            n_innovators <- round(num_nodes*0.025)
-            n_early_adopters <- round(num_nodes*0.135)
-            n_early_majority <- round(num_nodes*0.34)
-            n_late_majority <- round(num_nodes*0.34)
-            n_laggards <-  round(num_nodes*0.16)
+------------------------------------------------------------------------
 
-            numer_phases <- c(n_innovators, n_early_adopters,n_early_majority, n_late_majority, n_laggards)
+::: incremental
+``` {.r .R}
+n_innovators <- round(num_nodes*0.025)
+n_early_adopters <- round(num_nodes*0.135)
+n_early_majority <- round(num_nodes*0.34)
+n_late_majority <- round(num_nodes*0.34)
+n_laggards <-  round(num_nodes*0.16)
 
-            simulate_diffusion <- function(initial_graph, total_phase, node_strength, numer_phases, node_colors, phase_colors){
-              total_phase <- total_phase
-              top_indices <- NaN
-              used_nodes <- list()
-              adoption_history <- list()
-              
-              for (i in 1:total_phase){
-                num_phase <- numer_phases[i]
-                
-                if (i == 1){
-                  top_indices <- order(node_strength, decreasing = TRUE)[1:num_phase]
-                  
-                }else{
-                  connected_nodes <- unique(unlist(lapply(top_indices, function(x) {
-                    c(neighbors(initial_graph, x, mode = "all"))
-                  })))
-                  
-                  #print(connected_nodes)
-                  #remove the used nodes
-                  if (any((used_nodes) %in% connected_nodes)){
-                    connected_nodes <- setdiff(connected_nodes, used_nodes)
-                  }else{
-                    connected_nodes <- connected_nodes
-                  }
-                  weights_connected_nodes <- node_strength[connected_nodes]
-                  medium <- order(weights_connected_nodes, decreasing = TRUE)[1:num_phase]
-                  top_indices <-connected_nodes[medium]
-                  #print(top_indices)
-                }
-                # Save the adoption picture
-                top_indices <- top_indices
-                used_nodes <- unlist(append(used_nodes, top_indices))
-                adoption_history[i] <- list(top_indices)
-              }
+numer_phases <- c(n_innovators, n_early_adopters,n_early_majority, n_late_majority, n_laggards)
 
-              return(adoption_history)
-            }
+simulate_diffusion <- function(initial_graph, total_phase, node_strength, numer_phases, node_colors, phase_colors){
+  total_phase <- total_phase
+  top_indices <- NaN
+  used_nodes <- list()
+  adoption_history <- list()
 
-            total_phase <- 5
-            adoption_history <- simulate_diffusion(initial_graph, total_phase, node_strength, numer_phases, node_colors, phase_colors)
-            adoption_history
+  for (i in 1:total_phase){
+    num_phase <- numer_phases[i]
 
-            ```
+    if (i == 1){
+      top_indices <- order(node_strength, decreasing = TRUE)[1:num_phase]
+
+    }else{
+      connected_nodes <- unique(unlist(lapply(top_indices, function(x) {
+        c(neighbors(initial_graph, x, mode = "all"))
+      })))
+
+      #print(connected_nodes)
+      #remove the used nodes
+      if (any((used_nodes) %in% connected_nodes)){
+        connected_nodes <- setdiff(connected_nodes, used_nodes)
+      }else{
+        connected_nodes <- connected_nodes
+      }
+      weights_connected_nodes <- node_strength[connected_nodes]
+      medium <- order(weights_connected_nodes, decreasing = TRUE)[1:num_phase]
+      top_indices <-connected_nodes[medium]
+      #print(top_indices)
+    }
+    # Save the adoption picture
+    top_indices <- top_indices
+    used_nodes <- unlist(append(used_nodes, top_indices))
+    adoption_history[i] <- list(top_indices)
+  }
+
+  return(adoption_history)
+}
+
+total_phase <- 5
+adoption_history <- simulate_diffusion(initial_graph, total_phase, node_strength, numer_phases, node_colors, phase_colors)
+adoption_history
+```
+:::
+
+------------------------------------------------------------------------
 
 ## Preliminary Result
 
-The GIF below visualizes the diffusion of the process of AI Chatbots from innovators to laggards within the social network. The innovator was shown first with purple node, followed by the early adopters with orange nodes, the early majority with yellow nodes, the late majorities with green nodes, and the laggards with blue nodes. There was one node which did not assign to any group.
+![](images/technology_diffusion_revised_20_nodes.gif){align="center" width="100%"}
 
-The line between the nodes represents the association between two individuals. The thick line represents a large correlation weight and a thin line represents small correlation weight.
-
-The blue line represents a positive correlation, suggestions that one individual may promote the use of an AI chatobt of another. The red line represents a negative correlation, suggesting that one individual may hinder the use of an AI chatbot of another.
-
-![](images/technology_diffusion_revised_20_nodes.gif){width="606"}
+------------------------------------------------------------------------
 
 ## Next Step
 
--   Determine an adoption rate that this approach can achieve rather than predefined the adoption rate as 100%.
+-   Determine an adoption rate that this approach can achieve rather than presetting the adoption rate as 100%.
 
 -   Compare the percentage of individuals meeting the PA guidelines across different stages of adopters and non-adopters.

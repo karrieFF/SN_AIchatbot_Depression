@@ -1,9 +1,17 @@
 ---
-title: Simulate the Diffusion Process of Adopting AI Chatbots for Increasing Physical Activity
-subtitle: For PHS 7045
-author: Lingyi Fu
-format: pdf
-embed-resources: true
+title: "Simulate the Diffusion Process of Adopting AI Chatbots for Increasing Physical Activity"
+subtitle: "For PHS 7045"
+author: "Lingyi Fu"
+format:
+  pdf:
+    embed-resources: true
+    code-line-numbers: true  
+    listings: true            
+    latex-engine: pdflatex
+    
+header-includes:
+   - \usepackage{listings}
+   - \lstset{breaklines=true}
 ---
 
 ## Introduction
@@ -34,7 +42,7 @@ Then, based on the simulated network, I calculated the centrality of each indivi
 
 Lastly, I simulated the diffusion process. I first assigned the number of individuals among each category of adopters based on the diffusion of innovation theory (see Figure 1 below).
 
-![](Theoretical%20diffusion%20process.png){width="494"}
+![](Theoretical%20diffusion%20process.png){fig-align="center" width="485"}
 
 Figure 1. Diffusion of innovation theory
 
@@ -48,7 +56,7 @@ The innovators were determined 2.5% highest centrality nodes. Early adopters, ea
 
 The GIF below visualizes the diffusion of the process of AI Chatbots from innovators to laggards within the social network. The innovator was shown first with purple node, followed by the early adopters with orange nodes, the early majority with yellow nodes, the late majorities with green nodes, and the laggards with blue nodes. There was one node which did not assign to any group.
 
-![](Simulte%20diffusion%20process.gif)
+![](Final%20adotpion.png){fig-align="center" width="407" height="301"}
 
 ## Next Step
 
@@ -58,7 +66,7 @@ The GIF below visualizes the diffusion of the process of AI Chatbots from innova
 
 ## Code
 
-```{r}
+``` r
 #install.packages("igraph")
 library(igraph)
 library(animation)
@@ -68,7 +76,7 @@ set.seed(42) #reproduction
 num_nodes <- 25  # Number of nodes in the network
 
 # Generate a random corr matrix
-cormatrix <- matrix(runif(num_nodes^2, min = -1, max = 1), num_nodes) #consider negative association later
+cormatrix <- matrix(runif(num_nodes^2, min = -1, max = 1), num_nodes) 
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)] #Make symmetric
 diag(cormatrix) <- 0 #set diag as 0
 
