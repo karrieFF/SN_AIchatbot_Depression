@@ -42,7 +42,7 @@ Then, based on the simulated network, I calculated the centrality of each indivi
 
 Lastly, I simulated the diffusion process. I first assigned the number of individuals among each category of adopters based on the diffusion of innovation theory (see Figure 1 below).
 
-![](pdf picture/Theoretical diffusion process.png){fig-align="center" width="526"}
+![](pdf%20picture/Theoretical%20diffusion%20process.png){fig-align="center" width="526"}
 
 Figure 1. Diffusion of innovation theory
 
@@ -56,7 +56,7 @@ The innovators were determined 2.5% highest centrality nodes. Early adopters, ea
 
 The GIF below visualizes the diffusion of the process of AI Chatbots from innovators to laggards within the social network. The innovator was shown first with purple node, followed by the early adopters with orange nodes, the early majority with yellow nodes, the late majorities with green nodes, and the laggards with blue nodes. There was one node which did not assign to any group.
 
-![](pdf picture/Final adotpion.png){fig-align="center" width="451" height="339"}
+![](pdf%20picture/Final%20adotpion.png){fig-align="center" width="451" height="339"}
 
 Figure 2. Last step of the diffusion process
 
