@@ -1,0 +1,3 @@
+2. plot the figure of the diffusion process
+3. compare the results of different selection approach and think about the contribution of this study
+4. the most accurate is to think about the time-series effect
