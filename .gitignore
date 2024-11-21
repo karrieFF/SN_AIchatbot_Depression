@@ -1,2 +1,4 @@
-*_cache
-*_files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
