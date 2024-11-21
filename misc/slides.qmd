@@ -68,7 +68,7 @@ This project aims to simulate a social network intervention to understand how th
 
 ------------------------------------------------------------------------
 
-## Details for Step 1
+## Solution Plan
 
 ::: incremental
 -   **Step 1-1. Simulate correlation matrix**
