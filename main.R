@@ -2,7 +2,7 @@
 library(doipkg)
 num_agents <- 100
 
-# Generate data
+#---------------Step 1.  Generate Dataframe
 id <- seq(1, num_agents)
 gender <- sample(c(0, 1), num_agents, replace = TRUE)  # 0 represents female; 1 represents male
 age <- runif(num_agents, min = 18, max = 30)
@@ -18,6 +18,23 @@ original_data <- data.frame(
   Baseline_PA = baseline_PA
 )
 
+#-------------------Step 2. Generate the link between two nodes
+#original matrix
+agent1 <- original_data$ID
+agent2 <- original_data$ID
+
+# Create an adjacency matrix with random connections (0 or 1)
+# 0.9 probability for no connection, 0.1 for connection
+adj_matrix <- matrix(sample(0:1, num_agents^2, replace = TRUE, prob = c(0.9, 0.1)),
+                     nrow = num_agents,
+                     ncol = num_agents)
+
+adj_matrix[lower.tri(adj_matrix)] <- t(adj_matrix)[lower.tri(adj_matrix)] #Make symmetric
+diag(adj_matrix) <- 0 # Remove self-loops
+rownames(adj_matrix) <- agent1
+colnames(adj_matrix) <- agent2
+
+#---------------Step 3. Generate similarity matrix
 # Initialize the similarity matrix
 similarity_matrix <- matrix(0, nrow = num_agents, ncol = num_agents)
 
@@ -25,95 +42,94 @@ similarity_matrix <- matrix(0, nrow = num_agents, ncol = num_agents)
 for (i1 in 1:num_agents) {
   for (i2 in 1:num_agents) {
     # Extract individual data as numeric vectors, excluding the ID column
-    individual1 <- as.numeric(original_data[i1, -1])  
+    individual1 <- as.numeric(original_data[i1, -1])
     individual2 <- as.numeric(original_data[i2, -1])
-    
+
     # Calculate similarity using the specified method (change method as needed)
-    similarity_matrix[i1, i2] <- doipkg::calculate_similarity(individual1, individual2, method = "Euclidean") #this used the doipkg
+    similarity_matrix[i1, i2] <- doipkg::calculate_distance(individual1, individual2, method = "Euclidean") #this used the doipkg
   }
 }
 
-#standardize the matrix
-min_val <- min(similarity_matrix)
-max_val <- max(similarity_matrix)
+# Assign strength to the matrix
+final_matrix <- similarity_matrix * adj_matrix
 
-# Standardize the similarity matrix to range [0, 1]
-standardized_similarity_matrix <- (similarity_matrix - min_val) / (max_val - min_val)
+#---------------Step 4. detect adopter at each stage
 
-#original matrix
-agent1 <- sample(1:num_agents, 100, replace = TRUE)
-agent2 <- sample(1:num_agents, 100, replace = TRUE)
-
-# Create an adjacency matrix with random connections (0 or 1)
-# 0.9 probability for no connection, 0.1 for connection
-adj_matrix <- matrix(sample(0:1, num_agents^2, replace = TRUE, prob = c(0.9, 0.1)), 
-                     nrow = num_agents, 
-                     ncol = num_agents)
-
-adj_matrix[lower.tri(adj_matrix)] <- t(adj_matrix)[lower.tri(adj_matrix)] #Make symmetric
-diag(adj_matrix) <- 0 # Remove self-loops
-
-#assign strength to the matrix
-final_matrix <- standardized_similarity_matrix * adj_matrix
-
-#-----------------detect innovators
-
-# Function to calculate top innovators based on centrality
-ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16)
-
-#the reason why we select 300 - 1500 is based on the theory, the increase for the total 60 days is 1500,
-#if we split them into 5 parts, that should be 12days, 24days, 36days, 48days, 60days.
-#the icnrease is relatively linear, the step increase for each time split should 300, 600, 900, 1200
-#people at the final stage may adopt the chatbot the shorted time
-#thus the increase of the steps at the final stage is 300 steps
-#if we hypothesis is not enirely linear
-
-effectivenss <- c(300, 600, 900, 1200, 1500)
-
-# Replace final_matrix with your matrix
-p_innovators <- ps_theory[1]  # Proportion of innovators
-method <- "closeness"  # Method: "in-degree", "betweeness", or "closeness"
-result <- get_top_innovators(final_matrix, p_innovators, method)
-
-# Print the results
-innovators_indice <- result$indices # Top indices
-innovators_values <- result$values   # Corresponding centrality values
-
-#effectiveness, adoption increase 1000 steps, non-adoption increase 250 steps
-
-adoption_efficacy <- effectivenss[1]
-original_data[i,'Follow_up_PA'] <- NaN
-
-original_data[innovators_indice, 'Follow_up_PA'] <- original_data[innovators_indice, 'Baseline_PA'] + adoption_efficacy
-
-
-#-----------------adoption_effectiveness
-
-#early adopter, the rest of 13.5% (DOI), adoption rate is 45% (prior knowledge)
-select <- c()
-
-#p_theory <- 0.135
-ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16)
+stages <- c(1, 2, 3, 4, 5) # five stages
+stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
 p_prior <- 0.45
-stages <- seq(2:5)
+ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
+adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
+non_adoption_efficacy <- -250 #unit：step
+method <- "betweeness" # "counts, betweeness, closeness"
+original_data[,'Follow_up_PA'] <- NaN #initial a new column
 
-effectivenss <- c(300, 600, 900, 1200, 1500)
-non_adoption_efficacy <- -250 #finally
-
-result <- simulate_adoption(
-  final_matrix = final_matrix,
-  result = result,
-  stages = stages,
-  ps_theory = ps_theory,
-  p_prior = p_prior,
-  effectiveness = effectivenss,
-  non_adoption_efficacy = non_adoption_efficacy,
-  original_data = original_data
+output <- doipkg::detect_adopters(
+  num_agents,
+  adj_matrix,
+  final_matrix,
+  original_data,
+  stages,
+  stages_name,
+  ps_theory,
+  adoption_efficacy,
+  non_adoption_efficacy,
+  method,
+  p_prior
 )
-result
-# Access outputs
-adoption_index <- result$adoption_index
-non_adoption_index <- result$non_adoption_index
-updated_data <- result$updated_data
 
-updated_data
+#---------------Step 5. Calculate the effectiveness
+final_data <- output$original_data
+t_test_result <- t.test(final_data$Baseline_PA, final_data$Follow_up_PA, paired = TRUE)
+print(t_test_result)
+
+#---------------Step 6. Visualize the diffusion process
+
+#define the parameters of the network layout
+fixed_layout <- layout_with_graphopt(initial_graph)
+E(initial_graph)$weight <- edge_weights
+E(initial_graph)$width <- abs(E(initial_graph)$weight) * 4
+E(initial_graph)$color <- ifelse(E(initial_graph)$weight > 0,  "#000080", "#B22222")
+V(initial_graph)$size  <- 20
+V(initial_graph)$color <- "gray"
+V(initial_graph)$label.color <- "black"
+#plot(initial_graph, layout = fixed_layout)
+
+
+#initial and phase color
+node_colors <- rep("gray", vcount(initial_graph))
+phase_colors <- c("#AA77E9","#F7A24F","#FBEB66", "#4EA660", "#5292F7")
+
+phases <- c("Innovators", "Early Adopters", "Early Majority", "Late Majority", "Laggards")
+
+saveGIF({
+  for (i in 1:total_phase){
+    color_phase <- phase_colors[i]
+    top_indices <- unlist(adoption_history[i])
+    phase <- phases[i]
+    node_colors[top_indices] <- color_phase  # Change the color of other nodes with different color
+
+    plot(initial_graph,
+         vertex.color = node_colors,
+         layout = fixed_layout,
+         vertex.frame.color = "gray",
+         main = paste("Technology Diffusion - Phase:", phase))
+    legend("topright", legend = phases, col = phase_colors, pch = 19, bty = "n")
+  }
+}, movie.name = "technology_diffusion_revised_20_nodes.gif", interval = 2, ani.width = 800, ani.height = 600)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
