@@ -18,7 +18,7 @@ get_top_innovators <- function(final_matrix, p_innovators, method) {
   # Calculate the number of innovators to select
   top_n <- round(nrow(final_matrix) * p_innovators)
 
-  # In-degree centrality (number of non-zero connections for each column)
+  # Counts centrality (number of connections, number of non-zero connections for each column)
   nan_0_counts <- colSums(final_matrix != 0)
 
   # Betweenness centrality
@@ -45,15 +45,15 @@ get_top_innovators <- function(final_matrix, p_innovators, method) {
   sum_distance <- colSums(final_matrix)
 
   # Determine top innovators based on the selected method
-  if (method == "in-degree") {
+  if (method == "counts") {
     top_indices <- order(-nan_0_counts)[1:top_n]
     top_values <- nan_0_counts[top_indices]
   } else if (method == "betweeness") {
     top_indices <- order(-total_close)[1:top_n]
     top_values <- total_close[top_indices]
   } else if (method == "closeness") {
-    top_indices <- order(-sum_distance)[1:top_n]
-    top_values <- sum_distance[top_indices]
+    top_indices <- order(sum_distance)[1:top_n] #The short distance, rank from low to high
+    top_values <- sum_distance[top_indices] #top_indices represent short distance
   } else {
     stop("Invalid method. Choose from 'in-degree', 'betweeness', or 'closeness'.")
   }
