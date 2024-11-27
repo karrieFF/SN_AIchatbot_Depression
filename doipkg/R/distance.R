@@ -14,23 +14,23 @@
 #' @export
 
 # Function to calculate similarity between two individuals
-calculate_similarity <- function(individual1, individual2, method) {
+# distance represents how far the two nodes, but 1/distance represent the similarity,
+
+calculate_distance <- function(individual1, individual2, method) {
   if (method == "Cosine") {
     cosine_similarity <- sum(individual1 * individual2) /
-      (sqrt(sum(individual1^2)) * sqrt(sum(individual2^2)))     # Calculate cosine similarity
+      (sqrt(sum(individual1^2)) * sqrt(sum(individual2^2)))     # Calculate cosine distance
     return(cosine_similarity)
 
   } else if (method == "Hamming") {
-    hamming_distance <- sum(individual1 != individual2)     # Calculate Hamming distance and convert to similarity
+    hamming_distance <- sum(individual1 != individual2)     # Calculate Hamming distance
     return(hamming_distance)
 
   } else if (method == "Euclidean") {
-
-    euclidean_distance <- sqrt(sum((individual1 - individual2)^2))     # Calculate Euclidean distance and convert to similarity
+    euclidean_distance <- sqrt(sum((individual1 - individual2)^2))     # Calculate Euclidean distance
     return(euclidean_distance)
 
   } else if (method == "Jaccard") {
-
     jaccard_similarity <- sum(individual1 & individual2) / sum(individual1 | individual2)
     return(jaccard_similarity)
 
