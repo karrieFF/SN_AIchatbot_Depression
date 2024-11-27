@@ -1,3 +1,6 @@
 2. plot the figure of the diffusion process
 3. compare the results of different selection approach and think about the contribution of this study
 4. the most accurate is to think about the time-series effect
+5. I need to set the threshold, not connection can lead to adoption. but we need to have the proportion of adoption around an individual reach to a threshold, so that they can adopt the behaviors
+6. What is the purpose of running the simulation?
+7. have you consider the corr between two behaviors, one is the prior and one is further.
