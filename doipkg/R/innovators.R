@@ -14,12 +14,12 @@
 #' @export
 
 
-get_top_innovators <- function(final_matrix, p_innovators, method) {
+determine_adopter <- function(total_n, adj_matrix, final_matrix, p_innovators, method) {
   # Calculate the number of innovators to select
-  top_n <- round(nrow(final_matrix) * p_innovators)
+  top_n <- round(total_n * p_innovators)
 
   # Counts centrality (number of connections, number of non-zero connections for each column)
-  nan_0_counts <- colSums(final_matrix != 0)
+  nan_0_counts <- colSums(adj_matrix != 0)
 
   # Betweenness centrality
   total_close <- c()  # Vector to store betweenness centrality
