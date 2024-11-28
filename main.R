@@ -4,7 +4,6 @@ library(igraph) #use to create graph
 library(animation) #use to create GIF file
 
 num_agents <- 100
-
 #---------------Step 1.  Generate Dataframe
 id <- seq(1, num_agents)
 gender <- sample(c(0, 1), num_agents, replace = TRUE)  # 0 represents female; 1 represents male
@@ -86,13 +85,13 @@ output <- doipkg::detect_adopters(
   p_prior
 )
 
+output$adoption_lst
 #---------------Step 5. Calculate the effectiveness
 final_data <- output$original_data
 t_test_result <- t.test(final_data$Baseline_PA, final_data$Follow_up_PA, paired = TRUE)
 print(t_test_result)
 
 #---------------Step 6. Visualize the diffusion process
-
 cormatrix <- 1/standardized_similarity_matrix #transfer to similarity
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)] #Make symmetric
 diag(cormatrix) <- 0 #set diag as 0
