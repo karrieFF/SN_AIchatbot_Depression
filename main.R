@@ -90,7 +90,6 @@ t_test_result <- t.test(final_data$Baseline_PA, final_data$Follow_up_PA, paired 
 print(t_test_result)
 
 #---------------Step 6. Visualize the diffusion process
-# Convert similarity matrix to symmetric form
 cormatrix <- 1 / standardized_similarity_matrix  # Convert to similarity
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)]  # Make symmetric
 diag(cormatrix) <- 0  # Set diagonal to 0
