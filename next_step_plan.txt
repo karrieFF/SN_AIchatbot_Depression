@@ -1,9 +1,15 @@
-1. revise the detect adopter function, why there are duplications (Done!)
-2. revise the plot, how to make it more clear to show the process of adopting behaviors on the change of PA
-
-
 #Consider this later
-3. compare the results of different selection approaches and think about the contribution of this study
-4. What is the purpose of running the simulation?
-4. the most accurate is to think about the time-series effect
-7. have you consider the core between two behaviors, one is the prior and one is further.
+1. do I need to compare different approach for detecting innovators and adopters (this is the contribution of this study)
+2. Do I need to simulate multiple times of diffusion process? (run simulations is to know the benefits of this different approach)
+3. The efficacy is not significant, what can I do for this?
+4. Do I need to write function for this?
+-The number of connections
+-The number of being a mediator between two other nodes
+-Distance with 
+
+#plot the better approach
+1. diffusion network
+2. the diffusion process
+
+# the next step
+5. consider the day level diffusion

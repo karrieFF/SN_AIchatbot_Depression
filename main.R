@@ -38,7 +38,7 @@ colnames(adj_matrix) <- agent2
 
 #---------------Step 3. Generate similarity matrix
 # Initialize the similarity matrix
-similarity_matrix <- matrix(0, nrow = num_agents, ncol = num_agents)
+difference_matrix <- matrix(0, nrow = num_agents, ncol = num_agents)
 
 # Loop through each pair of individuals to populate the similarity matrix
 for (i1 in 1:num_agents) {
@@ -48,17 +48,17 @@ for (i1 in 1:num_agents) {
     individual2 <- as.numeric(original_data[i2, -1])
 
     # Calculate similarity using the specified method (change method as needed)
-    similarity_matrix[i1, i2] <- doipkg::calculate_distance(individual1, individual2, method = "Euclidean") #this used the doipkg
+    difference_matrix[i1, i2] <- doipkg::calculate_distance(individual1, individual2, method = "Euclidean") #this used the doipkg
   }
 }
 #standardize similarity matrix: Z-score standardized
 
-min_val <- min(similarity_matrix)
-max_val <- max(similarity_matrix)
-standardized_similarity_matrix <- (similarity_matrix - min_val) / (max_val - min_val)
+min_val <- min(difference_matrix)
+max_val <- max(difference_matrix)
+standardized_distance_matrix <- (difference_matrix - min_val) / (max_val - min_val)
 
 # Assign strength to the matrix
-final_matrix <- standardized_similarity_matrix * adj_matrix
+final_matrix <- standardized_distance_matrix * adj_matrix
 
 #---------------Step 4. detect adopter at each stage
 stages <- c(1, 2, 3, 4, 5) # five stages
@@ -66,7 +66,7 @@ stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
 p_prior <- 0.45
 ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
 adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
-non_adoption_efficacy <- -250 #unit：step
+non_adoption_efficacy <- 250 #unit：step, increase only 250, how to set this
 original_data[,'Follow_up_PA'] <- NaN #initial a new column
 method <- "closeness" # "counts, betweeness, closeness"
 
@@ -90,7 +90,7 @@ t_test_result <- t.test(final_data$Baseline_PA, final_data$Follow_up_PA, paired 
 print(t_test_result)
 
 #---------------Step 6. Visualize the diffusion process
-cormatrix <- 1 / standardized_similarity_matrix  # Convert to similarity
+cormatrix <- 1 / standardized_distance_matrix  # Convert to similarity matrix
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)]  # Make symmetric
 diag(cormatrix) <- 0  # Set diagonal to 0
 
@@ -155,7 +155,6 @@ plot(
   vertex.label.dist = V(initial_graph)$label.dist  # Label distance
 )
 
-
 #-----------------------Step 7. Simulate diffusion process with the increase in pA
 
 # Define node frame colors and phase colors
@@ -205,5 +204,5 @@ saveGIF({
       bty = "n"    # No legend box
     )
   }
-}, movie.name = "technology_diffusion_revised_20_nodes.gif", interval = 4, ani.width = 1000, ani.height = 800)
+}, movie.name = "AI chatbot diffusion process.gif", interval = 4, ani.width = 1000, ani.height = 800)
 

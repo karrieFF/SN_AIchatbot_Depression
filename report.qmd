@@ -1,0 +1,133 @@
+---
+title: "Simulated Social network interventions to promote physical activity through increasing AI chatbot adoption"
+subtitle: "For PHS 7045"
+author: "Lingyi Fu"
+format:
+  pdf:
+    embed-resources: true
+    code-line-numbers: true  
+    listings: true            
+    latex-engine: pdflatex
+    
+header-includes:
+   - \usepackage{listings}
+   - \lstset{breaklines=true}
+---
+
+## Introduction
+
+Artificial intelligence (AI)-driven Chatbots (AI chatbots), developed using natural language processing techniques, are capable of conversing with humans in a natural language format. Recently, AI chatbots have been used to increase physical activity. On the basis of traditional mobile technologies (mHealth), such as wide-reaching and accessibility, portability, and privacy, this new technique benefits the mHealth intervention to be more interactive, autonomous, personalized, supportive, and more natural and intuitive.
+
+The adoption of an AI Chatbot is a critical factor that influences the efficacy of using an AI chatbot to change health behaviors. A high adoption can show a high efficacy in increasing their physical activity. Diffusion of Innovation (DOI) theory is a social science theory that explains how new ideas, products, or behaviors spread through a population over time. This theory emphasizes the effect of the social system on the adoption of an innovation, and it also describes five stages of the population adopting an innovation, including innovators, early adopters, early majority, late majority, and laggards. Innovators are people who want to be the first to try the innovation. Early adopters are people who represent opinion leaders. The early majority are rarely leaders, but they do adopt new ideas before the average person. Late majority are skeptical of change, and will only adopt an innovation after it has been tried by the majority. Laggards are bound by tradition and very conservative. People adopting AI chatbot at different stages tend to show different extend of increasing their physical activity.
+
+Therefore, underpinned by the diffusion of innovation theory, this project aims to investigate the adoption of AI chatbot and their efficacy in promoting physical activity through social network intervention.
+
+## Solution Plan
+
+**Step 1. Simulate a dataset and creating adjacency matrix for network**
+
+The first step is to simulate the agents and their corresponding characteristics such as gender, age, social economical status, and baseline physical activity. Then, two adjacency matrix will be created based on the simulated agents. One matrix is created by randomly assigning the connections between two agents. While another matrix is created by calculating the distance between two agents based on their characteristics. This matrix will be only used for calculating the closeness matrix.
+
+Four distances metrics are involved in this project:
+
+-   Cosine distance
+
+    Cosine distance \<- sum(individual1 \* individual2) / (sqrt(sum(individual1\^2)) \* sqrt(sum(individual2\^2)))
+
+-   Hamming distance
+
+    hamming_distance \<- sum(individual1 != individual2)
+
+-   Euclidean distance
+
+    euclidean_distance \<- sqrt(sum((individual1 - individual2)\^2))
+
+-   Jaccard distance
+
+    jaccard_similarity \<- sum(individual1 & individual2) / sum(individual1 \| individual2)
+
+**Step 2. Simulate diffusion process of adopting AI Chatbot** **based on adjacent matrix**
+
+The second step is to simulate the diffusion process of adopting an AI Chatbot within the network. Three centrality measures can be used to determine the adopter at the first stage or follow-up stage.
+
+-   Count: the number of connections
+
+-   Betweeness: The number of being a mediator between two other nodes
+
+-   Closeness: Distance with other nodes
+
+Then, the diffusion stages and adoption rate at each stage was determined based on DOI theory and Chatbot adoption rate in real settings proposed by Oracle Corporation (2016). Therefore, except for the stage1 (innovators), the adoption rate is formulated as:
+
+adoption_rate = p_doi\*p_chatbot
+
+While for stage1 (innovators), the adoption rate is p_doi = 0.025.
+
+![](pdf%20picture/Theoretical%20diffusion%20process.png){fig-align="center" width="510"}
+
+Finally, the process to calculate the adopters at each stage as follows:
+
+-   *For innovators:*
+
+    -   Determine the number of adopters at this stage.
+
+    -   Calculate the centrality of each agents.
+
+    -   Return agents with the highest value of centrality as adopters at this stage.
+
+-   *For early adopters, early majority, late majority, and laggards:*
+
+    -   Determine the number of adopters at this stage.
+
+    -   calculate all the agents that were connected all adopters at the prior stages.
+
+    -   Calculate the centrality of these connected agents.
+
+    -   Return agents with the highest value of centrality as adopters at this stage.
+
+**Step 3. Calculate the follow-up physical activity and measure the change of physical activity using t-test**
+
+The increase of physical activity at each stage was prior defined based on Bickmore et al. (2013)'s study. The innovators, early adopters, early majority, late majority, and laggards will increase 1500 steps, 1200 steps, 900 steps, 600 steps, and 300 steps respectively. While the non-adopters will increase 250 steps.
+
+Then, the follow-up physical activity status were calculated accordingly. Finally, t-test was used measure if the change in physical activity is statistically significant or not.
+
+![](images/clipboard-3370989202.png){fig-align="center" width="283"}
+
+**Step 4. Compare the results of different approaches to calculate centrality**
+
+Then, the efficacy of changing in physical activity was compared using three approaches (i.e., Count, Betweeness, Closeness). For each approach, 1000 simulations was conducted, and the final results were the average results of those 1000 simulations.
+
+**Step 5. Visualize the network with baseline physical activity and follow-up physical activity**
+
+The fifth step is to create a network graph. The nodes of the network represent each agent. The line links two nodes represents the connection of two agents. The dark color represents high physical activity level. The color of the nodes were splitted into two parts. The left part represents the baseline physical activity level, while the right part represents the follow-up physical activity level.
+
+**6. Visualize the diffusion process**
+
+Lastly, the diffusion process of adopting AI chatbot was visualized based on the network.
+
+## Results
+
+1.  **Change in PA**
+
+-   Count approach
+
+-   Betweeness
+
+-   Closeness
+
+2.  **Simulated Network**
+3.  ![](images/clipboard-1813056464.png){width="717"}
+    3.  **Diffusion process**
+
+The GIF below visualizes the diffusion of the process of AI Chatbots from innovators to laggards within the social network. The node size of adopters at each stage will increase. The frame color of the innovators, early adopters, early majority, late majority, and laggards will change to yellow, orange, purple, green, and blue respectively.
+
+![](AI%20chatbot%20diffusion%20process.gif)
+
+## Next step plan
+
+1.  time is also a factor, consider the day-level diffusion
+
+## References
+
+Oracle Corporation (2016) <https://www.oracle.com/webfolder/s/delivery_production/docs/FY16h1/doc35/CXResearchVirtualExperiences.pdf>
+
+Bickmore, T. W., Schulman, D., & Sidner, C. (2013). Automated interventions for multiple health behaviors using conversational agents. *Patient education and counseling*, *92*(2), 142-148.
