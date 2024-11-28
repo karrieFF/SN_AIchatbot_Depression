@@ -17,7 +17,8 @@
 #' @export
 
 
-detect_adopters <- function(num_agents,adj_matrix,final_matrix,original_data,stages,stages_name,ps_theory,adoption_efficacy,non_adoption_efficacy,method,p_prior) {
+detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data, stages, stages_name, ps_theory, adoption_efficacy, non_adoption_efficacy, method, p_prior) {
+
   # Initialize variables
   adoption_lst <- list()
   update_efficacy <- list()
@@ -34,7 +35,7 @@ detect_adopters <- function(num_agents,adj_matrix,final_matrix,original_data,sta
       result <- determine_adopter(total_n, adj_matrix, final_matrix, p_DOI, method)
       stage_indice <- result$indices  # Top indices
       stage_values <- result$values   # Corresponding centrality values
-      #print(stage_indice)
+      #print(stage_indices)
       previous_indices <- c(previous_indices, stage_indice)
 
     } else {
@@ -46,8 +47,13 @@ detect_adopters <- function(num_agents,adj_matrix,final_matrix,original_data,sta
       connect_indices <- c()
       for (index in previous_indices) {
         select_column <- adj_matrix[, index]
-        new_indices <- setdiff(which(select_column != 0), c(previous_indices, connect_indices))
-        connect_indices <- c(connect_indices, new_indices)
+        select_index <- which(select_column != 0)
+        select_index <- setdiff(select_index, previous_indices)
+        select_index <- setdiff(select_index, connect_indices)
+        connect_indices <- c(connect_indices, select_index)
+
+        #new_indices <- setdiff(which(select_column != 0), c(previous_indices, connect_indices))
+        #connect_indices <- c(connect_indices, new_indices)
       }
 
       # Subset matrices for connected nodes
