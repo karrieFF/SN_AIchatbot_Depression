@@ -2,5 +2,5 @@
 
 export(calculate_distance)
 export(detect_adopters)
-export(get_top_innovators)
+export(determine_adopter)
 export(simulate_adoption)

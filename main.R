@@ -61,15 +61,14 @@ standardized_similarity_matrix <- (similarity_matrix - min_val) / (max_val - min
 final_matrix <- standardized_similarity_matrix * adj_matrix
 
 #---------------Step 4. detect adopter at each stage
-
 stages <- c(1, 2, 3, 4, 5) # five stages
 stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
 p_prior <- 0.45
 ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
 adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
 non_adoption_efficacy <- -250 #unit：step
-method <- "betweeness" # "counts, betweeness, closeness"
 original_data[,'Follow_up_PA'] <- NaN #initial a new column
+method <- "closeness" # "counts, betweeness, closeness"
 
 output <- doipkg::detect_adopters(
   num_agents,
@@ -85,65 +84,86 @@ output <- doipkg::detect_adopters(
   p_prior
 )
 
-output$adoption_lst
 #---------------Step 5. Calculate the effectiveness
 final_data <- output$original_data
 t_test_result <- t.test(final_data$Baseline_PA, final_data$Follow_up_PA, paired = TRUE)
 print(t_test_result)
 
 #---------------Step 6. Visualize the diffusion process
-cormatrix <- 1/standardized_similarity_matrix #transfer to similarity
-cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)] #Make symmetric
-diag(cormatrix) <- 0 #set diag as 0
-adj_matrix[upper.tri(adj_matrix)] <- FALSE # Ensure the adjacency matrix is undirected
-edge_weights <- cormatrix[adj_matrix] #extract edge weights
+# Convert similarity matrix to symmetric form
+cormatrix <- 1 / standardized_similarity_matrix  # Convert to similarity
+cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)]  # Make symmetric
+diag(cormatrix) <- 0  # Set diagonal to 0
+
+# Ensure adjacency matrix is undirected
+adj_matrix[upper.tri(adj_matrix)] <- FALSE  # Remove upper triangle to ensure symmetry
+edge_weights <- cormatrix[adj_matrix]  # Extract edge weights
 
 # Create the graph object
 initial_graph <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
 
-# Assign weights to the edges
+# Assign edge weights
 E(initial_graph)$weight <- edge_weights
 
-# Visualize the graph layout
-fixed_layout <- layout_with_graphopt(initial_graph) ## Repulsion between nodes (lower increases spacing)
+# Define the layout
+fixed_layout <- layout_with_graphopt(initial_graph)  # Repulsion layout for better spacing
 
 # Set edge properties
-E(initial_graph)$width <- abs(E(initial_graph)$weight) * 2 # Scale edge width (reduced scaling factor)
-E(initial_graph)$color <-  "#404040" # Blue for positive, red for negative
+E(initial_graph)$width <- abs(E(initial_graph)$weight) * 3  # Scale edge width
+E(initial_graph)$color <- "#BBBCB6"  # Set edge color (gray)
 
 # Set vertex properties
-V(initial_graph)$size <- 10 # Reduced node size for better spacing
-V(initial_graph)$label.color <- "black" # Set label color
-V(initial_graph)$label.cex <- 0.7 # Reduce label size
-V(initial_graph)$label.dist <- 0 # Increase label distance from nodes
+V(initial_graph)$size <- 10  # Node size
+V(initial_graph)$label.color <- "black"  # Label color
+V(initial_graph)$label.cex <- 0.7  # Label font size
+V(initial_graph)$label.dist <- 0  # Label distance
 
-#set color of the nodes
-base_pa <- original_data$Baseline_PA
+# Normalize data for vertex colors
+base_pa <- final_data$Baseline_PA
 normalized_base_pa <- (base_pa - min(base_pa)) / (max(base_pa) - min(base_pa))  # Min-max normalization
-V(initial_graph)$color <- rgb(1, 1 - normalized_base_pa, 1 - normalized_base_pa)  # Gradient from white to red
-V(initial_graph)$frame.color <- "black"    # Node border color
 
-#node border size
-par(mar = c(0, 0, 0, 0))  # Set margins to zero for all sides
+# Create gradient red colors based on normalized data
+gradient_red <- rgb(1, 1 - normalized_base_pa, 1 - normalized_base_pa)  # Gradient red (higher values = more intense red)
 
-# Plot the graph
+follow_up_pa <-  final_data$Follow_up_PA
+normalized_follow_pa <- (follow_up_pa - min(follow_up_pa)) / (max(follow_up_pa) - min(follow_up_pa))  # Min-max normalization
+
+# Create gradient red colors based on normalized data
+gradient_follow_red <- rgb(1, 1 - normalized_follow_pa, 1 - normalized_follow_pa)  # Gradient red (higher values = more intense red)
+
+# Define pie chart colors for each node
+pie_colors <- mapply(function(red, follow_red) {
+  c(red, follow_red)  # Left is gradient red (baseline), right is gradient follow-up red
+}, gradient_red, gradient_follow_red, SIMPLIFY = FALSE)
+
+V(initial_graph)$pie <- list(rep(1, 2))  # Equal proportions for pie slices
+V(initial_graph)$pie.color <- pie_colors  # Assign pie colors dynamically
+
+# Set additional vertex properties
+V(initial_graph)$frame.color <- "white"  # Node border color
+
+# Remove plot margins
+par(mar = c(0, 0, 0, 0))
+
+# Plot the graph with pie chart nodes
 plot(
   initial_graph,
   layout = fixed_layout,
-  vertex.label = V(initial_graph)$label,
-  vertex.label.cex = V(initial_graph)$label.cex,
-  vertex.label.dist = V(initial_graph)$label.dist
+  vertex.shape = "pie",  # Use pie charts as node shapes
+  vertex.size = V(initial_graph)$size,  # Node size
+  vertex.label = V(initial_graph)$label,  # Node labels
+  vertex.label.cex = V(initial_graph)$label.cex,  # Label font size
+  vertex.label.dist = V(initial_graph)$label.dist  # Label distance
 )
+
 
 #-----------------------Step 7. Simulate diffusion process with the increase in pA
 
 # Define node frame colors and phase colors
-node_frame_colors <- rep("black", vcount(initial_graph))  # Default frame color
+node_frame_colors <- rep("white", vcount(initial_graph))  # Default frame color
+node_size <- rep(10, vcount(initial_graph))
 
-#Default node color
-default_node <- V(initial_graph)$color
-
-phase_colors <- c("#AA77E9", "#F7A24F", "#FBEB66", "#4EA660", "#5292F7")  # Phase colors
+phase_colors <- c("#FBEB66", "#EF8A43", "#7F00FF", "#4EA660", "#193E8F")  # Phase colors
 phases <- c("Innovators", "Early Adopters", "Early Majority", "Late Majority", "Laggards")  # Phase names
 
 # Get all stages and their names
@@ -154,7 +174,6 @@ total_stages <- length(stages_name)
 #get the change efficacy
 all_stages_efficacy <- output$update_efficacy
 
-
 # Save the animation as a GIF
 saveGIF({
   for (i in 1:total_stages) {
@@ -164,25 +183,17 @@ saveGIF({
 
     # Update node frame colors for the current phase
     node_frame_colors[top_indices] <- phase_colors[i]
-
-    # Extract efficacy values for nodes in the current phase
-    base_pa[top_indices] <- final_data$Follow_up_PA[top_indices]
-
-    # Normalize efficacy values to range [0, 1] for relative coloring
-    normalized_efficacy <- (base_pa - min(base_pa)) / (max(base_pa) - min(base_pa))
-
-    node_colors <- V(initial_graph)$color  # Start with existing colors
-    node_colors <- rgb(1, 1 - normalized_base_pa, 1 - normalized_base_pa)  # Gradient from blue to white
+    node_size[top_indices] <- 15
 
     # Plot the graph for the current phase
     plot(
       initial_graph,
-      vertex.color = node_colors,        # Node color
+      vertex.shape = "pie",
       layout = fixed_layout,                  # Fixed layout for consistency
       vertex.frame.color = node_frame_colors, # Use frame colors dynamically
       vertex.label.color = "black",           # Node label color
       vertex.label.cex = 0.8,                 # Node label size
-      vertex.size = 10,                       # Node size
+      vertex.size =node_size ,                       # Node size
       main = paste("Technology Diffusion - Phase:", phases[i])  # Dynamic title
     )
 

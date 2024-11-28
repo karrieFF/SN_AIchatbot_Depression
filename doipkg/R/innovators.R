@@ -14,35 +14,31 @@
 #' @export
 
 
-get_top_innovators <- function(final_matrix, p_innovators, method) {
+determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_innovators, method) {
+
+  # Subset matrices for connected nodes
+  adj_matrix_sta <- adj_matrix[, indices]
+  final_matrix_sta <- final_matrix[, indices]
+
   # Calculate the number of innovators to select
-  top_n <- round(nrow(final_matrix) * p_innovators)
+  top_n <- round(total_n * p_innovators)
 
   # Counts centrality (number of connections, number of non-zero connections for each column)
-  nan_0_counts <- colSums(final_matrix != 0)
+  nan_0_counts <- colSums(adj_matrix_sta != 0)
 
   # Betweenness centrality
-  total_close <- c()  # Vector to store betweenness centrality
-  for (i0 in 1:nrow(final_matrix)) {
-    num_close <- 0
-    col_first <- final_matrix[, i0]  # Extract column for the current agent
+  total_close <- c()  # Vector to store betweeness centrality
+  for (i0 in 0:length(indices)) {
+    #print(i0)
+    col_first <- adj_matrix_sta[, i0]  # Extract column for the current agent
     non_0_index <- which(col_first != 0)  # Get indices of non-zero values in the column
 
-    # Loop over each pair of non-zero indices
-    for (i1 in non_0_index) {
-      except_i <- setdiff(non_0_index, i1)  # Exclude the current index i1
-      for (i2 in except_i) {
-        value <- final_matrix[i1, i2]  # Get value at (i1, i2) in the matrix
-        if (value != 0) {  # Increment if non-zero
-          num_close <- num_close + 1
-        }
-      }
-    }
+    num_close <- (non_0_index*(non_0_index-1))/2
     total_close <- c(total_close, num_close)  # append the result
   }
 
   # Closeness centrality (sum of similarity values for each column)
-  sum_distance <- colSums(final_matrix)
+  sum_distance <- colSums(adj_matrix_sta)
 
   # Determine top innovators based on the selected method
   if (method == "counts") {
@@ -57,10 +53,11 @@ get_top_innovators <- function(final_matrix, p_innovators, method) {
   } else {
     stop("Invalid method. Choose from 'in-degree', 'betweeness', or 'closeness'.")
   }
+  real_top_indices <- indices[top_indices] #real indices returned in connect_indices
 
   # Return the results as a list
   return(list(
-    indices = top_indices,
+    indices = real_top_indices,
     values = top_values,
     method = method
   ))

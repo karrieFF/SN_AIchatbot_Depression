@@ -32,11 +32,12 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
       total_n <- num_agents
 
       # Determine adopters
-      result <- determine_adopter(total_n, adj_matrix, final_matrix, p_DOI, method)
+      result <- determine_adopter(total_n, adj_matrix, final_matrix, sequence(num_agents), p_DOI, method)
       stage_indice <- result$indices  # Top indices
       stage_values <- result$values   # Corresponding centrality values
       #print(stage_indices)
       previous_indices <- c(previous_indices, stage_indice)
+      #print(previous_indices)
 
     } else {
       # Proportion of adopters based on prior stage
@@ -48,24 +49,19 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
       for (index in previous_indices) {
         select_column <- adj_matrix[, index]
         select_index <- which(select_column != 0)
-        select_index <- setdiff(select_index, previous_indices)
-        select_index <- setdiff(select_index, connect_indices)
+        select_index <- setdiff(select_index, connect_indices)#the indices are not in the connect indices
+        select_index <- setdiff(select_index, previous_indices)#the indices are not in the previous indices
         connect_indices <- c(connect_indices, select_index)
-
-        #new_indices <- setdiff(which(select_column != 0), c(previous_indices, connect_indices))
-        #connect_indices <- c(connect_indices, new_indices)
       }
 
-      # Subset matrices for connected nodes
-      adj_matrix_sta <- adj_matrix[connect_indices, connect_indices]
-      final_matrix_sta <- final_matrix[connect_indices, connect_indices]
-
       # Determine adopters in the connected sub-network
-      result_sta <- determine_adopter(total_n, adj_matrix_sta, final_matrix_sta, p_DOI, method)
-      stage_indice <- result_sta$indices  # Top indices
+      result_sta <- determine_adopter(total_n, adj_matrix, final_matrix, connect_indices, p_DOI, method)
+      stage_indice <- result_sta$indices  # indices of the matrix
+
       #print(stage_indice)
       stage_values <- result_sta$values   # Corresponding centrality values
       previous_indices <- c(previous_indices, stage_indice)
+      #print(previous_indices)
     }
 
     # Efficacy of this stage

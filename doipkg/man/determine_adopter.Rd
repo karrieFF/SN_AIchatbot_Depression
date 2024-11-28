@@ -4,7 +4,14 @@
 \alias{determine_adopter}
 \title{The title of -get innovators-}
 \usage{
-determine_adopter(total_n, adj_matrix, final_matrix, p_innovators, method)
+determine_adopter(
+  total_n,
+  adj_matrix,
+  final_matrix,
+  indices,
+  p_innovators,
+  method
+)
 }
 \arguments{
 \item{final_matrix}{A Numeric Matrix.}
