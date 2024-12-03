@@ -84,23 +84,47 @@ Finally, the process to calculate the adopters at each stage as follows:
 
     -   Return agents with the highest value of centrality as adopters at this stage.
 
-**Step 3. Calculate the follow-up physical activity and measure the change of physical activity using t-test**
+**Step 3. Calculate the follow-up physical activity and compare with different approaches**
 
 The increase of physical activity at each stage was prior defined based on Bickmore et al. (2013)'s study. The innovators, early adopters, early majority, late majority, and laggards will increase 1500 steps, 1200 steps, 900 steps, 600 steps, and 300 steps respectively. While the non-adopters will increase 250 steps.
 
-Then, the follow-up physical activity status were calculated accordingly. Finally, t-test was used measure if the change in physical activity is statistically significant or not.
+For each simulation, we will calculate the good performance rate of each approach
 
-![](images/clipboard-3370989202.png){fig-align="center" width="283"}
+n1 = 0, n2 = 0, n3 = 0, n_simulations = 1000
 
-**Step 4. Compare the results of different approaches to calculate centrality**
+p1 = p (steps_count \> (steps_betweeness & steps_closeness))
 
-Then, the efficacy of changing in physical activity was compared using three approaches (i.e., Count, Betweeness, Closeness). For each approach, 1000 simulations was conducted, and the final results were the average results of those 1000 simulations.
+p2 = p (steps_betweeness \> (steps_count & steps_closeness))
 
-**Step 5. Visualize the network with baseline physical activity and follow-up physical activity**
+p3 = p (steps_closeness \> (steps_count & steps_betweeness))
+
+if p1 \> (p2 & p3):
+
+n1 += 1
+
+elif p2 \> (p1 & p3):
+
+n2 += 1
+
+else p3 \> (p1 & p2):
+
+n3 +=1
+
+Then, we calculate the probability of performing better for each approach:
+
+p1_sim = n1/n_simulations
+
+p2_sim = n2/n_simulations
+
+p3_sim = n3/n_simulations
+
+Finally, the highest probability is the approach that we need to select
+
+**Step 4. Visualize the network with baseline physical activity and follow-up physical activity**
 
 The fifth step is to create a network graph. The nodes of the network represent each agent. The line links two nodes represents the connection of two agents. The dark color represents high physical activity level. The color of the nodes were splitted into two parts. The left part represents the baseline physical activity level, while the right part represents the follow-up physical activity level.
 
-**6. Visualize the diffusion process**
+**Step 5. Visualize the diffusion process**
 
 Lastly, the diffusion process of adopting AI chatbot was visualized based on the network.
 
@@ -114,6 +138,18 @@ Lastly, the diffusion process of adopting AI chatbot was visualized based on the
 
 -   Closeness
 
+    ```         
+    data:  final_data$Baseline_PA and final_data$Follow_up_PA 
+
+    t = -13.895, df = 99, p-value < 2.2e-16 
+    Alternative hypothesis: true mean difference is not equal to 0.95 percent confidence interval:  
+    (-534.2596, -400.7404)
+
+    sample estimates: 
+
+    mean difference           -467.5 
+    ```
+
 2.  **Simulated Network**
 3.  ![](images/clipboard-1813056464.png){width="717"}
     3.  **Diffusion process**
@@ -122,12 +158,8 @@ The GIF below visualizes the diffusion of the process of AI Chatbots from innova
 
 ![](AI%20chatbot%20diffusion%20process.gif)
 
-## Next step plan
-
-1.  time is also a factor, consider the day-level diffusion
-
 ## References
 
-Oracle Corporation (2016) <https://www.oracle.com/webfolder/s/delivery_production/docs/FY16h1/doc35/CXResearchVirtualExperiences.pdf>
+-   Oracle Corporation. (2016). *CX research: Virtual experiences*. Retrieved from <https://www.oracle.com/webfolder/s/delivery_production/docs/FY16h1/doc35/CXResearchVirtualExperiences.pdf>
 
-Bickmore, T. W., Schulman, D., & Sidner, C. (2013). Automated interventions for multiple health behaviors using conversational agents. *Patient education and counseling*, *92*(2), 142-148.
+-   Bickmore, T. W., Schulman, D., & Sidner, C. (2013). Automated interventions for multiple health behaviors using conversational agents. *Patient Education and Counseling, 92*(2), 142–148. https://doi.org/\[DOI if available\]
