@@ -3,3 +3,4 @@
 export(calculate_distance)
 export(detect_adopters)
 export(determine_adopter)
+export(generate_network_matrices)
