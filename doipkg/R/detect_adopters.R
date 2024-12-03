@@ -23,7 +23,6 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
   adoption_lst <- list()
   update_efficacy <- list()
   previous_indices <- c()
-  original_data[,'Follow_up_PA'] <- NaN # Initialize a new column
 
   for (stage in stages) {
     if (stage == 1) {
@@ -72,12 +71,12 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
     update_efficacy[[stages_name[stage]]] <- original_data[stage_indice, 'Baseline_PA'] + stage_efficacy
 
     # Update original data with new efficacy
-    original_data[stage_indice, 'Follow_up_PA'] <- original_data[stage_indice, 'Baseline_PA'] + stage_efficacy
+    original_data[stage_indice, approach] <- original_data[stage_indice, 'Baseline_PA'] + stage_efficacy
   }
 
   # Handle non-adopters
   non_adoption_index <- setdiff(1:num_agents, previous_indices)
-  original_data[non_adoption_index, 'Follow_up_PA'] <- original_data[non_adoption_index, 'Baseline_PA'] + non_adoption_efficacy
+  original_data[non_adoption_index, approach] <- original_data[non_adoption_index, 'Baseline_PA'] + non_adoption_efficacy
 
   # Return results
   return(list(
