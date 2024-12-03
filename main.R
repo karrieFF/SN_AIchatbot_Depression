@@ -3,73 +3,89 @@ library(doipkg)
 library(igraph) #use to create graph
 library(animation) #use to create GIF file
 
+#parameters
 num_agents <- 100
-#---------------Step 1.  Generate Dataframe
-id <- seq(1, num_agents)
-gender <- sample(c(0, 1), num_agents, replace = TRUE)  # 0 represents female; 1 represents male
-age <- runif(num_agents, min = 18, max = 30)
-socio_economic_status <- sample(c(0, 1, 2), num_agents, replace = TRUE)  # 0 = low, 1 = middle, 2 = high
-baseline_PA <- runif(num_agents, min = 1000, max = 15000)  # 0 = did not reach PA goal, 1 = reached PA goal
-
-# Create the data frame
-original_data <- data.frame(
-  ID = id,
-  Gender = gender,
-  Age = age,
-  SES = socio_economic_status,
-  Baseline_PA = baseline_PA
-)
-
-#-------------------Step 2. Generate the link between two nodes
-#original matrix
-agent1 <- original_data$ID
-agent2 <- original_data$ID
-
-# Create an adjacency matrix with random connections (0 or 1)
-# 0.9 probability for no connection, 0.1 for connection
-adj_matrix <- matrix(sample(0:1, num_agents^2, replace = TRUE, prob = c(0.9, 0.1)),
-                     nrow = num_agents,
-                     ncol = num_agents)
-
-adj_matrix[lower.tri(adj_matrix)] <- t(adj_matrix)[lower.tri(adj_matrix)] #Make symmetric
-diag(adj_matrix) <- 0 # Remove self-loops
-rownames(adj_matrix) <- agent1
-colnames(adj_matrix) <- agent2
-
-#---------------Step 3. Generate similarity matrix
-# Initialize the similarity matrix
-difference_matrix <- matrix(0, nrow = num_agents, ncol = num_agents)
-
-# Loop through each pair of individuals to populate the similarity matrix
-for (i1 in 1:num_agents) {
-  for (i2 in 1:num_agents) {
-    # Extract individual data as numeric vectors, excluding the ID column
-    individual1 <- as.numeric(original_data[i1, -1])
-    individual2 <- as.numeric(original_data[i2, -1])
-
-    # Calculate similarity using the specified method (change method as needed)
-    difference_matrix[i1, i2] <- doipkg::calculate_distance(individual1, individual2, method = "Euclidean") #this used the doipkg
-  }
-}
-#standardize similarity matrix: Z-score standardized
-
-min_val <- min(difference_matrix)
-max_val <- max(difference_matrix)
-standardized_distance_matrix <- (difference_matrix - min_val) / (max_val - min_val)
-
-# Assign strength to the matrix
-final_matrix <- standardized_distance_matrix * adj_matrix
-
-#---------------Step 4. detect adopter at each stage
+method <- c("counts",  "closeness") #"betweeness",
 stages <- c(1, 2, 3, 4, 5) # five stages
 stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
 p_prior <- 0.45
 ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
 adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
 non_adoption_efficacy <- 250 #unit：step, increase only 250, how to set this
-original_data[,'Follow_up_PA'] <- NaN #initial a new column
-method <- "closeness" # "counts, betweeness, closeness"
+n_simulations <- 10
 
+####################################
+#---------------------simulations
+#################################
+
+n_counts <- 0
+n_closeness <- 0
+
+for (i in 1:n_simulations){
+  #---------create network data
+  data <- doipkg::generate_network_matrices(num_agents)
+
+  original_data <- data$original_data
+  dajacency_matrix <- data$adjacency_matrix
+  similarity_matrix <- data$similarity_matrix
+  final_matrix <- data$final_matrix
+
+  #-------------------Compare the results from two approaches
+  compare_table <- data.frame(counts = numeric(num_agents), closeness = numeric(num_agents))
+
+  for (i in 1:2){
+    approach <- method[i]
+    original_data[ ,approach] <- NaN #initial a new column
+    output <- doipkg::detect_adopters(
+      num_agents,
+      adj_matrix,
+      final_matrix,
+      original_data,
+      stages,
+      stages_name,
+      ps_theory,
+      adoption_efficacy,
+      non_adoption_efficacy,
+      approach,
+      p_prior
+    )
+    compare_table[i] <- output$original_data[,approach]
+  }
+
+  #-----------calculate the probability of each approach larger than another approach
+  largest_counts <- apply(compare_table, 1, function(row) row["counts"] > row["closeness"])
+  largest_closeness <- apply(compare_table, 1, function(row) row["closeness"] > row["counts"])
+
+  prob_counts <- mean(largest_counts)
+  prob_closeness <- mean(largest_closeness)
+  all_probabilities <- c(prob_counts,prob_closeness)
+
+  if (max(all_probabilities) == prob_counts) {
+    n_counts <- n_counts + 1
+  } else if (max(all_probabilities) == prob_closeness) {
+    n_closeness <- n_closeness + 1
+  }
+
+}
+
+#The final probability have higher
+final_pro_counts <- n_counts/n_simulations
+final_pro_close <- n_closeness/n_simulations
+
+########################################################
+#---------------Step 6. Visualize the diffusion process
+#######################################################
+
+data <- doipkg::generate_network_matrices(num_agents)
+
+original_data <- data$original_data
+dajacency_matrix <- data$adjacency_matrix
+similarity_matrix <- data$similarity_matrix
+final_matrix <- data$final_matrix
+
+#select closeness
+approach <- "closeness"
+original_data[ ,approach] <- NaN #initial a new column
 output <- doipkg::detect_adopters(
   num_agents,
   adj_matrix,
@@ -80,16 +96,12 @@ output <- doipkg::detect_adopters(
   ps_theory,
   adoption_efficacy,
   non_adoption_efficacy,
-  method,
+  approach,
   p_prior
 )
 
-#---------------Step 5. Calculate the effectiveness
 final_data <- output$original_data
-t_test_result <- t.test(final_data$Baseline_PA, final_data$Follow_up_PA, paired = TRUE)
-print(t_test_result)
 
-#---------------Step 6. Visualize the diffusion process
 cormatrix <- 1 / standardized_distance_matrix  # Convert to similarity matrix
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)]  # Make symmetric
 diag(cormatrix) <- 0  # Set diagonal to 0
@@ -118,13 +130,13 @@ V(initial_graph)$label.cex <- 0.7  # Label font size
 V(initial_graph)$label.dist <- 0  # Label distance
 
 # Normalize data for vertex colors
-base_pa <- final_data$Baseline_PA
+base_pa <- final_data$closeness
 normalized_base_pa <- (base_pa - min(base_pa)) / (max(base_pa) - min(base_pa))  # Min-max normalization
 
 # Create gradient red colors based on normalized data
 gradient_red <- rgb(1, 1 - normalized_base_pa, 1 - normalized_base_pa)  # Gradient red (higher values = more intense red)
 
-follow_up_pa <-  final_data$Follow_up_PA
+follow_up_pa <-  final_data$closeness
 normalized_follow_pa <- (follow_up_pa - min(follow_up_pa)) / (max(follow_up_pa) - min(follow_up_pa))  # Min-max normalization
 
 # Create gradient red colors based on normalized data
@@ -155,7 +167,9 @@ plot(
   vertex.label.dist = V(initial_graph)$label.dist  # Label distance
 )
 
-#-----------------------Step 7. Simulate diffusion process with the increase in pA
+############################################
+#-------Step 7. Simulate diffusion process with the increase in pA
+###########################################
 
 # Define node frame colors and phase colors
 node_frame_colors <- rep("white", vcount(initial_graph))  # Default frame color
