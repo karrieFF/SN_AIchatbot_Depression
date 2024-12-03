@@ -8,7 +8,7 @@
 #' @param result A list.
 #' @param stages A list.
 #' @param stages_name A list.
-#' @param method A str.
+#' @param approach A str.
 #' @param ps_theory A list.
 #' @param p_prior A Numeric scalar.
 #' @param adoption_efficacy A list.
@@ -17,7 +17,7 @@
 #' @export
 
 
-detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data, stages, stages_name, ps_theory, adoption_efficacy, non_adoption_efficacy, method, p_prior) {
+detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data, stages, stages_name, ps_theory, adoption_efficacy, non_adoption_efficacy, approach, p_prior) {
 
   # Initialize variables
   adoption_lst <- list()
@@ -31,7 +31,7 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
       total_n <- num_agents
 
       # Determine adopters
-      result <- determine_adopter(total_n, adj_matrix, final_matrix, sequence(num_agents), p_DOI, method)
+      result <- determine_adopter(total_n, adj_matrix, final_matrix, sequence(num_agents), p_DOI, approach)
       stage_indice <- result$indices  # Top indices
       stage_values <- result$values   # Corresponding centrality values
       #print(stage_indices)
@@ -54,7 +54,13 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
       }
 
       # Determine adopters in the connected sub-network
-      result_sta <- determine_adopter(total_n, adj_matrix, final_matrix, connect_indices, p_DOI, method)
+      result_sta <- determine_adopter(total_n,
+                                      adj_matrix,
+                                      final_matrix,
+                                      connect_indices,
+                                      p_DOI,
+                                      approach)
+
       stage_indice <- result_sta$indices  # indices of the matrix
 
       #print(stage_indice)
@@ -80,8 +86,8 @@ detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data,
 
   # Return results
   return(list(
-    adoption_lst = adoption_lst,
-    update_efficacy = update_efficacy,
-    original_data = original_data
+    output_lst = adoption_lst,
+    update_effi = update_efficacy,
+    output_data = original_data
   ))
 }

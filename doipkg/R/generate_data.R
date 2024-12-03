@@ -11,7 +11,6 @@
 #' \item{final_matrix}{A weighted matrix combining the adjacency and similarity matrices.}
 #' @export
 
-
 generate_network_matrices <- function(num_agents) {
   #################################################################
   # Step 1: Generate Dataframe

@@ -10,7 +10,7 @@ determine_adopter(
   final_matrix,
   indices,
   p_innovators,
-  method
+  approach
 )
 }
 \arguments{

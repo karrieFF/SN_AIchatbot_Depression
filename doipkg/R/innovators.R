@@ -11,7 +11,7 @@
 #' \item{final_matrixp_innovators}{Numeric scalar. the calculation of  \code{final_matrix} and \code{p_innovators}}
 #' @export
 
-determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_innovators, method) {
+determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_innovators, approach) {
   # -----------------------Subset matrices for connected nodes
   adj_matrix_sta <- adj_matrix[, indices]
   final_matrix_sta <- final_matrix[, indices]
@@ -33,26 +33,24 @@ determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_inno
     total_close <- c(total_close, num_close)  # append the result
   }
 
-  #print(total_close)
-
   # Closeness centrality (sum of similarity values for each column)
   sum_distance <- colSums(adj_matrix_sta)
 
   # Determine top innovators based on the selected method
-  if (method == "counts") {
+  if (approach == "counts") {
     top_indices <- order(-nan_0_counts)[1:top_n]
     top_values <- nan_0_counts[top_indices]
 
-  } else if (method == "betweeness") {
+  } else if (approach == "betweeness") {
     top_indices <- order(-total_close)[1:top_n]
     top_values <- total_close[top_indices]
 
-  } else if (method == "closeness") {
+  } else if (approach == "closeness") {
     top_indices <- order(sum_distance)[1:top_n] #The short distance, rank from low to high
     top_values <- sum_distance[top_indices] #top_indices represent short distance
 
   } else {
-    stop("Invalid method. Choose from 'in-degree', 'betweeness', or 'closeness'.")
+    stop("Invalid approach Choose from 'in-degree', 'betweeness', or 'closeness'.")
   }
 
   real_top_indices <- indices[top_indices] #real indices returned in connect_indices
@@ -61,6 +59,6 @@ determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_inno
   return(list(
     indices = real_top_indices,
     values = top_values,
-    method = method
+    approach = approach
   ))
 }

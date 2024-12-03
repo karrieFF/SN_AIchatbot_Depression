@@ -14,7 +14,7 @@ detect_adopters(
   ps_theory,
   adoption_efficacy,
   non_adoption_efficacy,
-  method,
+  approach,
   p_prior
 )
 }
@@ -37,7 +37,7 @@ detect_adopters(
 
 \item{non_adoption_efficacy}{A Numeric scalar.}
 
-\item{method}{A str.}
+\item{approach}{A str.}
 
 \item{p_prior}{A Numeric scalar.}
 

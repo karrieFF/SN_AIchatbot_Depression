@@ -17,7 +17,7 @@ List run_simulation_cpp(
   int n_counts = 0;
   int n_closeness = 0;
 
-  // Simulation loop
+ //Simulation loop
   for (int i = 0; i < n_simulations; i++) {
     // Step 1: Generate mock network data
     NumericMatrix compare_table(num_agents, methods.size());
@@ -25,8 +25,7 @@ List run_simulation_cpp(
     for (int j = 0; j < methods.size(); j++) {
       std::string approach = as<std::string>(methods[j]);
 
-      // Generate adoption results for this approach
-      NumericVector output_data(num_agents);
+      NumericVector output_data(num_agents); // Generate adoption results for this approach
 
       for (int k = 0; k < num_agents; k++) {
         // Simulate adoption or non-adoption
@@ -69,7 +68,6 @@ List run_simulation_cpp(
   double final_pro_counts = (double)n_counts / n_simulations;
   double final_pro_closeness = (double)n_closeness / n_simulations;
 
-  // Return results
   return List::create(
     Named("final_pro_counts") = final_pro_counts,
     Named("final_pro_closeness") = final_pro_closeness
