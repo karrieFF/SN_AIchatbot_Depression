@@ -52,8 +52,6 @@ The second step is to simulate the diffusion process of adopting an AI Chatbot w
 
 -   Count: the number of connections
 
--   Betweeness: The number of being a mediator between two other nodes
-
 -   Closeness: Distance with other nodes
 
 Then, the diffusion stages and adoption rate at each stage was determined based on DOI theory and Chatbot adoption rate in real settings proposed by Oracle Corporation (2016). Therefore, except for the stage1 (innovators), the adoption rate is formulated as:
@@ -90,33 +88,25 @@ The increase of physical activity at each stage was prior defined based on Bickm
 
 For each simulation, we will calculate the good performance rate of each approach
 
-n1 = 0, n2 = 0, n3 = 0, n_simulations = 1000
+n1 = 0, n2 = 0, n_simulations = 1000
 
 p1 = p (steps_count \> (steps_betweeness & steps_closeness))
 
-p2 = p (steps_betweeness \> (steps_count & steps_closeness))
+p2 = p (steps_closeness \> (steps_count & steps_betweeness))
 
-p3 = p (steps_closeness \> (steps_count & steps_betweeness))
-
-if p1 \> (p2 & p3):
+if p1 \> p2:
 
 n1 += 1
 
-elif p2 \> (p1 & p3):
+elif p2 \> p1:
 
-n2 += 1
-
-else p3 \> (p1 & p2):
-
-n3 +=1
+n2 +=1
 
 Then, we calculate the probability of performing better for each approach:
 
 p1_sim = n1/n_simulations
 
 p2_sim = n2/n_simulations
-
-p3_sim = n3/n_simulations
 
 Finally, the highest probability is the approach that we need to select
 
@@ -137,18 +127,6 @@ Lastly, the diffusion process of adopting AI chatbot was visualized based on the
 -   Betweeness
 
 -   Closeness
-
-    ```         
-    data:  final_data$Baseline_PA and final_data$Follow_up_PA 
-
-    t = -13.895, df = 99, p-value < 2.2e-16 
-    Alternative hypothesis: true mean difference is not equal to 0.95 percent confidence interval:  
-    (-534.2596, -400.7404)
-
-    sample estimates: 
-
-    mean difference           -467.5 
-    ```
 
 2.  **Simulated Network**
 3.  ![](images/clipboard-1813056464.png){width="717"}

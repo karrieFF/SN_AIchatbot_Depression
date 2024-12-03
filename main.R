@@ -1,91 +1,56 @@
-
 library(doipkg)
 library(igraph) #use to create graph
 library(animation) #use to create GIF file
+library(Rcpp)
+sourceCpp("rcpp.cpp")
 
-#parameters
+########################################
+#--------------------Step. 1 Select the best approach to detect adopters
+########################################
+
+#----------parameters
 num_agents <- 100
-method <- c("counts",  "closeness") #"betweeness",
+method <- c("counts",  "closeness")
 stages <- c(1, 2, 3, 4, 5) # five stages
 stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
 p_prior <- 0.45
 ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
 adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
 non_adoption_efficacy <- 250 #unit：step, increase only 250, how to set this
-n_simulations <- 10
+n_simulations <- 100000
 
-####################################
-#---------------------simulations
-#################################
+# Run simulation
+results <- run_simulation_cpp(
+  num_agents,
+  n_simulations,
+  methods,
+  stages,
+  stages_name,
+  p_prior,
+  ps_theory,
+  adoption_efficacy,
+  non_adoption_efficacy
+)
 
-n_counts <- 0
-n_closeness <- 0
+# View results
+print(results)
 
-for (i in 1:n_simulations){
-  #---------create network data
-  data <- doipkg::generate_network_matrices(num_agents)
-
-  original_data <- data$original_data
-  dajacency_matrix <- data$adjacency_matrix
-  similarity_matrix <- data$similarity_matrix
-  final_matrix <- data$final_matrix
-
-  #-------------------Compare the results from two approaches
-  compare_table <- data.frame(counts = numeric(num_agents), closeness = numeric(num_agents))
-
-  for (i in 1:2){
-    approach <- method[i]
-    original_data[ ,approach] <- NaN #initial a new column
-    output <- doipkg::detect_adopters(
-      num_agents,
-      adj_matrix,
-      final_matrix,
-      original_data,
-      stages,
-      stages_name,
-      ps_theory,
-      adoption_efficacy,
-      non_adoption_efficacy,
-      approach,
-      p_prior
-    )
-    compare_table[i] <- output$original_data[,approach]
-  }
-
-  #-----------calculate the probability of each approach larger than another approach
-  largest_counts <- apply(compare_table, 1, function(row) row["counts"] > row["closeness"])
-  largest_closeness <- apply(compare_table, 1, function(row) row["closeness"] > row["counts"])
-
-  prob_counts <- mean(largest_counts)
-  prob_closeness <- mean(largest_closeness)
-  all_probabilities <- c(prob_counts,prob_closeness)
-
-  if (max(all_probabilities) == prob_counts) {
-    n_counts <- n_counts + 1
-  } else if (max(all_probabilities) == prob_closeness) {
-    n_closeness <- n_closeness + 1
-  }
-
-}
-
-#The final probability have higher
-final_pro_counts <- n_counts/n_simulations
-final_pro_close <- n_closeness/n_simulations
 
 ########################################################
-#---------------Step 6. Visualize the diffusion process
+#-------------------Step 2. Use the good metric to visualize the network
 #######################################################
 
 data <- doipkg::generate_network_matrices(num_agents)
 
 original_data <- data$original_data
-dajacency_matrix <- data$adjacency_matrix
+adj_matrix <- data$adjacency_matrix
 similarity_matrix <- data$similarity_matrix
 final_matrix <- data$final_matrix
 
-#select closeness
+#select closeness as the metrics
 approach <- "closeness"
-original_data[ ,approach] <- NaN #initial a new column
+original_data[ ,approach] <- NaN
+
 output <- doipkg::detect_adopters(
   num_agents,
   adj_matrix,
@@ -100,8 +65,11 @@ output <- doipkg::detect_adopters(
   p_prior
 )
 
-final_data <- output$original_data
+final_data <- output$output_data
 
+min_val <- min(similarity_matrix)
+max_val <- max(similarity_matrix)
+standardized_distance_matrix <- (similarity_matrix - min_val) / (max_val - min_val)
 cormatrix <- 1 / standardized_distance_matrix  # Convert to similarity matrix
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)]  # Make symmetric
 diag(cormatrix) <- 0  # Set diagonal to 0
@@ -131,20 +99,20 @@ V(initial_graph)$label.dist <- 0  # Label distance
 
 # Normalize data for vertex colors
 base_pa <- final_data$closeness
-normalized_base_pa <- (base_pa - min(base_pa)) / (max(base_pa) - min(base_pa))  # Min-max normalization
+normalized_base_pa <- (base_pa - min(base_pa)) / (max(base_pa) - min(base_pa))
 
 # Create gradient red colors based on normalized data
-gradient_red <- rgb(1, 1 - normalized_base_pa, 1 - normalized_base_pa)  # Gradient red (higher values = more intense red)
+gradient_red <- rgb(1, 1 - normalized_base_pa, 1 - normalized_base_pa)
 
 follow_up_pa <-  final_data$closeness
-normalized_follow_pa <- (follow_up_pa - min(follow_up_pa)) / (max(follow_up_pa) - min(follow_up_pa))  # Min-max normalization
+normalized_follow_pa <- (follow_up_pa - min(follow_up_pa)) / (max(follow_up_pa) - min(follow_up_pa))
 
 # Create gradient red colors based on normalized data
-gradient_follow_red <- rgb(1, 1 - normalized_follow_pa, 1 - normalized_follow_pa)  # Gradient red (higher values = more intense red)
+gradient_follow_red <- rgb(1, 1 - normalized_follow_pa, 1 - normalized_follow_pa)
 
 # Define pie chart colors for each node
 pie_colors <- mapply(function(red, follow_red) {
-  c(red, follow_red)  # Left is gradient red (baseline), right is gradient follow-up red
+  c(red, follow_red)
 }, gradient_red, gradient_follow_red, SIMPLIFY = FALSE)
 
 V(initial_graph)$pie <- list(rep(1, 2))  # Equal proportions for pie slices
@@ -168,7 +136,7 @@ plot(
 )
 
 ############################################
-#-------Step 7. Simulate diffusion process with the increase in pA
+#-------Step 3. Visualize the simulation process
 ###########################################
 
 # Define node frame colors and phase colors
@@ -179,12 +147,12 @@ phase_colors <- c("#FBEB66", "#EF8A43", "#7F00FF", "#4EA660", "#193E8F")  # Phas
 phases <- c("Innovators", "Early Adopters", "Early Majority", "Late Majority", "Laggards")  # Phase names
 
 # Get all stages and their names
-all_stages <- output$adoption_lst  # List of nodes for each phase
+all_stages <- output$output_lst  # List of nodes for each phase
 stages_name <- names(all_stages)   # Phase names (keys in the list)
 total_stages <- length(stages_name)
 
 #get the change efficacy
-all_stages_efficacy <- output$update_efficacy
+all_stages_efficacy <- output$update_effi
 
 # Save the animation as a GIF
 saveGIF({
