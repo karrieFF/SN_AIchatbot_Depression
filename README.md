@@ -12,6 +12,8 @@ SN_AIchatbot_Physical_Activity project has the following files:
 
 `final_slides.qmd`: final presentation in quarto format.
 
+`images/`: a folder for images used in slides.html.
+
 `final_slides.html`: final presentation in html format.
 
 `.github/workflows/check-qmd-render.yaml`: The workflow that builds the html and pdf files.
