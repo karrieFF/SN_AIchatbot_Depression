@@ -1,14 +1,19 @@
-#' The title of -get innovators-
+#' Get adopters
 #'
-#' Here is a brief description
-#' @param final_matrix A Numeric Matrix.
-#' @param p_innovators A Numeric scalar.
-#' @param method A string.
-#' @details Get the innovators of \code{final_matrix} and \code{p_innovators}.
-#' @return A Numeric Vector \code{doipkg_innovators}:
-#' \item{final_matrix}{Numeric Matrix.}
-#' \item{p_innovators}{Numeric Vector.}
-#' \item{final_matrixp_innovators}{Numeric scalar. the calculation of  \code{final_matrix} and \code{p_innovators}}
+#' This function determines adopters in a network using one of three centrality measures: counts, betweenness, or closeness.
+#' @param total_n Numeric scalar. Total number of nodes in the network.
+#' @param adj_matrix Numeric matrix. The adjacency matrix representing the network.
+#' @param final_matrix Numeric matrix. An additional matrix related to the network (optional for this function).
+#' @param indices Numeric vector. Indices of the nodes to consider for adoption.
+#' @param p_innovators Numeric scalar. Proportion of total nodes to be classified as innovators.
+#' @param approach String. The centrality method to use: "counts", "betweeness", or "closeness".
+#' @details Determines the top innovators in the network based on the specified centrality measure.
+#' @return A list containing:
+#' \describe{
+#'   \item{indices}{Numeric vector. Indices of the top adopters.}
+#'   \item{values}{Numeric vector. Centrality values of the top adopters.}
+#'   \item{approach}{String. The centrality measure used.}
+#' }
 #' @export
 
 determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_innovators, approach) {
@@ -23,7 +28,7 @@ determine_adopter <- function(total_n, adj_matrix, final_matrix, indices, p_inno
   nan_0_counts <- colSums(adj_matrix_sta != 0)
 
   # -------------------------Betweenness centrality
-  total_close <- c()  # Vector to store Betweeness centrality
+  total_close <- c()
 
   for (i0 in 1:length(indices)){
     col_first <- adj_matrix_sta[, i0]  # Extract column for the current agent

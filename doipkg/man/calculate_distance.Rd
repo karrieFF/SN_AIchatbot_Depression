@@ -2,26 +2,23 @@
 % Please edit documentation in R/distance.R
 \name{calculate_distance}
 \alias{calculate_distance}
-\title{The title of -calculate similarity-}
+\title{Calculate Distance Between Two Agents}
 \usage{
 calculate_distance(individual1, individual2, method)
 }
 \arguments{
-\item{individual1}{A Numeric Vector.}
+\item{individual1}{Numeric vector. The first individual.}
 
-\item{individual2}{A Numeric Vector.}
+\item{individual2}{Numeric vector. The second individual.}
 
-\item{method}{A string.}
+\item{method}{String. The method used for calculation: "Cosine", "Hamming", "Euclidean", or "Jaccard".}
 }
 \value{
-A Numeric scalar \code{doipkg_similarity}:
-\item{individual1}{Numeric Vector.}
-\item{individual2}{Numeric Vector.}
-\item{individual1individual2}{Numeric scalar. the sum of \code{individual1} and \code{individual2}}
+Numeric scalar. The calculated similarity or distance.
 }
 \description{
-Here is a brief description
+Computes the distance between two numeric vectors based on a specified method.
 }
 \details{
-Computes the similarity of \code{individual1} and \code{individual2}.
+Computes the similarity or distance between \code{individual1} and \code{individual2} using one of the supported methods.
 }

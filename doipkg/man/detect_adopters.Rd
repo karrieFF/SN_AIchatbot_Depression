@@ -2,7 +2,7 @@
 % Please edit documentation in R/detect_adopters.R
 \name{detect_adopters}
 \alias{detect_adopters}
-\title{The title of -detect_adopters-}
+\title{Detect Adopters in the Diffusion Process}
 \usage{
 detect_adopters(
   num_agents,
@@ -19,30 +19,37 @@ detect_adopters(
 )
 }
 \arguments{
-\item{num_agents}{A Numeric scala.}
+\item{num_agents}{Numeric scalar. Total number of agents in the network.}
 
-\item{adj_matrix}{A Numeric Matrix.}
+\item{adj_matrix}{Numeric matrix. Adjacency matrix representing the network.}
 
-\item{final_matrix}{A Numeric Matrix.}
+\item{final_matrix}{Numeric matrix. Additional network-related matrix (optional for this function).}
 
-\item{original_data}{A Numeric Matrix.}
+\item{original_data}{Numeric matrix. Data containing baseline and other attributes for agents.}
 
-\item{stages}{A list.}
+\item{stages}{List. A sequence of stages for the adoption process.}
 
-\item{stages_name}{A list.}
+\item{stages_name}{List. Names corresponding to each stage.}
 
-\item{ps_theory}{A list.}
+\item{ps_theory}{List. Proportions of adopters for each stage.}
 
-\item{adoption_efficacy}{A list.}
+\item{adoption_efficacy}{List. Efficacy values added for adopters at each stage.}
 
-\item{non_adoption_efficacy}{A Numeric scalar.}
+\item{non_adoption_efficacy}{Numeric scalar. Efficacy value for non-adopters.}
 
-\item{approach}{A str.}
+\item{approach}{String. Centrality measure approach: "counts", "betweeness", or "closeness".}
 
-\item{p_prior}{A Numeric scalar.}
-
-\item{result}{A list.}
+\item{p_prior}{Numeric scalar. Proportion adjustment for subsequent stages.}
+}
+\value{
+A list containing:
+\describe{
+\item{output_lst}{List of adopter indices for each stage.}
+\item{update_effi}{List of updated efficacy values for each stage.}
+\item{output_data}{Original data updated with new efficacy values for adopters and non-adopters.}
+}
 }
 \description{
-Here is a brief description
+This function identifies adopters across multiple stages based on centrality measures, updates their efficacy,
+and adjusts data for non-adopters.
 }

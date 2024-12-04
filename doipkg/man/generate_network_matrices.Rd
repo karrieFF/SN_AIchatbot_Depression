@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_data.R
 \name{generate_network_matrices}
 \alias{generate_network_matrices}
-\title{The title of -generate network matrices-}
+\title{Generate network data}
 \usage{
 generate_network_matrices(num_agents)
 }
@@ -10,8 +10,6 @@ generate_network_matrices(num_agents)
 \item{num_agents}{A numeric scalar indicating the number of agents to generate.}
 }
 \value{
-A list :
-
 A list containing:
 \item{original_data}{A data frame of agent demographic data.}
 \item{adjacency_matrix}{A symmetric adjacency matrix indicating random connections between agents.}
@@ -19,5 +17,5 @@ A list containing:
 \item{final_matrix}{A weighted matrix combining the adjacency and similarity matrices.}
 }
 \description{
-Here is a brief description
+This function is used to generate a dataset with multiple characteristics and create an adjacent matrix to generate network.
 }

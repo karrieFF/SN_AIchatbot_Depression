@@ -1,8 +1,6 @@
-#' The title of -generate network matrices-
+#' Generate network data
 #'
-#' Here is a brief description
-#' @param num_agents A Numeric scalar.
-#' @return A list :
+#' This function is used to generate a dataset with multiple characteristics and create an adjacent matrix to generate network.
 #' @param num_agents A numeric scalar indicating the number of agents to generate.
 #' @return A list containing:
 #' \item{original_data}{A data frame of agent demographic data.}
@@ -12,9 +10,11 @@
 #' @export
 
 generate_network_matrices <- function(num_agents) {
+
   #################################################################
   # Step 1: Generate Dataframe
   #################################################################
+
   id <- seq(1, num_agents)
   gender <- sample(c(0, 1), num_agents, replace = TRUE)  # 0 = female, 1 = male
   age <- runif(num_agents, min = 18, max = 30)

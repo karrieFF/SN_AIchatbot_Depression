@@ -1,16 +1,12 @@
-#' The title of -calculate similarity-
+#' Calculate Distance Between Two Agents
 #'
-#' Here is a brief description
+#' Computes the distance between two numeric vectors based on a specified method.
 #'
-#' @param individual1 A Numeric Vector.
-#' @param individual2 A Numeric Vector.
-#' @param method A string.
-#'
-#' @details Computes the similarity of \code{individual1} and \code{individual2}.
-#' @return A Numeric scalar \code{doipkg_similarity}:
-#' \item{individual1}{Numeric Vector.}
-#' \item{individual2}{Numeric Vector.}
-#' \item{individual1individual2}{Numeric scalar. the sum of \code{individual1} and \code{individual2}}
+#' @param individual1 Numeric vector. The first individual.
+#' @param individual2 Numeric vector. The second individual.
+#' @param method String. The method used for calculation: "Cosine", "Hamming", "Euclidean", or "Jaccard".
+#' @details Computes the similarity or distance between \code{individual1} and \code{individual2} using one of the supported methods.
+#' @return Numeric scalar. The calculated similarity or distance.
 #' @export
 
 # Function to calculate similarity between two individuals

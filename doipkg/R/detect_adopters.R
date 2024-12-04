@@ -1,21 +1,26 @@
-#' The title of -detect_adopters-
+#' Detect Adopters in the Diffusion Process
 #'
-#' Here is a brief description
+#' This function identifies adopters across multiple stages based on centrality measures, updates their efficacy,
+#' and adjusts data for non-adopters.
 #'
-#' @param num_agents A Numeric scala.
-#' @param adj_matrix A Numeric Matrix.
-#' @param final_matrix A Numeric Matrix.
-#' @param result A list.
-#' @param stages A list.
-#' @param stages_name A list.
-#' @param approach A str.
-#' @param ps_theory A list.
-#' @param p_prior A Numeric scalar.
-#' @param adoption_efficacy A list.
-#' @param non_adoption_efficacy A Numeric scalar.
-#' @param original_data A Numeric Matrix.
+#' @param num_agents Numeric scalar. Total number of agents in the network.
+#' @param adj_matrix Numeric matrix. Adjacency matrix representing the network.
+#' @param final_matrix Numeric matrix. Additional network-related matrix (optional for this function).
+#' @param original_data Numeric matrix. Data containing baseline and other attributes for agents.
+#' @param stages List. A sequence of stages for the adoption process.
+#' @param stages_name List. Names corresponding to each stage.
+#' @param ps_theory List. Proportions of adopters for each stage.
+#' @param adoption_efficacy List. Efficacy values added for adopters at each stage.
+#' @param non_adoption_efficacy Numeric scalar. Efficacy value for non-adopters.
+#' @param approach String. Centrality measure approach: "counts", "betweeness", or "closeness".
+#' @param p_prior Numeric scalar. Proportion adjustment for subsequent stages.
+#' @return A list containing:
+#' \describe{
+#'   \item{output_lst}{List of adopter indices for each stage.}
+#'   \item{update_effi}{List of updated efficacy values for each stage.}
+#'   \item{output_data}{Original data updated with new efficacy values for adopters and non-adopters.}
+#' }
 #' @export
-
 
 detect_adopters <- function(num_agents, adj_matrix, final_matrix, original_data, stages, stages_name, ps_theory, adoption_efficacy, non_adoption_efficacy, approach, p_prior) {
 

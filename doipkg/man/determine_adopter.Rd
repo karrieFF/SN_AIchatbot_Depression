@@ -2,7 +2,7 @@
 % Please edit documentation in R/innovators.R
 \name{determine_adopter}
 \alias{determine_adopter}
-\title{The title of -get innovators-}
+\title{Get adopters}
 \usage{
 determine_adopter(
   total_n,
@@ -14,21 +14,29 @@ determine_adopter(
 )
 }
 \arguments{
-\item{final_matrix}{A Numeric Matrix.}
+\item{total_n}{Numeric scalar. Total number of nodes in the network.}
 
-\item{p_innovators}{A Numeric scalar.}
+\item{adj_matrix}{Numeric matrix. The adjacency matrix representing the network.}
 
-\item{method}{A string.}
+\item{final_matrix}{Numeric matrix. An additional matrix related to the network (optional for this function).}
+
+\item{indices}{Numeric vector. Indices of the nodes to consider for adoption.}
+
+\item{p_innovators}{Numeric scalar. Proportion of total nodes to be classified as innovators.}
+
+\item{approach}{String. The centrality method to use: "counts", "betweeness", or "closeness".}
 }
 \value{
-A Numeric Vector \code{doipkg_innovators}:
-\item{final_matrix}{Numeric Matrix.}
-\item{p_innovators}{Numeric Vector.}
-\item{final_matrixp_innovators}{Numeric scalar. the calculation of  \code{final_matrix} and \code{p_innovators}}
+A list containing:
+\describe{
+\item{indices}{Numeric vector. Indices of the top adopters.}
+\item{values}{Numeric vector. Centrality values of the top adopters.}
+\item{approach}{String. The centrality measure used.}
+}
 }
 \description{
-Here is a brief description
+This function determines adopters in a network using one of three centrality measures: counts, betweenness, or closeness.
 }
 \details{
-Get the innovators of \code{final_matrix} and \code{p_innovators}.
+Determines the top innovators in the network based on the specified centrality measure.
 }
