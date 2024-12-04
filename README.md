@@ -3,11 +3,17 @@
 SN_AIchatbot_Physical_Activity project has the following files:
 
 `README.md`: this file.
+
 `.gitignore`: a file that tells git which files to ignore.
+
 `doipkg_0.0.0.9000`: diffusion of innovation package zip file
+
 `main.R`: main code to run simulation and visualize diffusion process
+
 `final_slides.qmd`: final presentation in quarto format.
+
 `final_slides.html`: final presentation in html format.
+
 `.github/workflows/check-qmd-render.yaml`: The workflow that builds the html and pdf files.
 
 `misc/`: All materials for midterm 
