@@ -186,5 +186,5 @@ saveGIF({
       bty = "n"    # No legend box
     )
   }
-}, movie.name = "AI chatbot diffusion process.gif", interval = 4, ani.width = 1000, ani.height = 800)
+}, movie.name = "ai_chatbot_diffusion_process.gif", interval = 4, ani.width = 1000, ani.height = 800)
 
