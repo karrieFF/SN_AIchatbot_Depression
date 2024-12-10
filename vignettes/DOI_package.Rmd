@@ -24,28 +24,28 @@ This package can be used to simulate how social network intervention can affect 
 
 This function generates a dataset with multiple characteristics and creates an adjacent matrix to generate a network.
 
-```{r}
+### Function
+
 generate_network_matrices(num_agents)
-```
 
 ### Arguments
 
 |              |                                                              |
-|--------------|--------------------------------------------------------------|
+|----------------|-------------------------------------------------------|
 | `num_agents` | A numeric scalar indicates the number of agents to generate. |
 
 ## Fun 2: Calculate the distance between agents
 
 Computes the similarity or distance between two numeric vectors based on a specified method.
 
-```{r}
+### Function
+
 calculate_distance(individual1, individual2, method)
-```
 
 ### Arguments
 
 |               |                                                                                          |
-|---------------|------------------------------------------------------------------------------------------|
+|---------------|---------------------------------------------------------|
 | `individual1` | Numeric vector. The first individual.                                                    |
 | `individual2` | Numeric vector. The second individual.                                                   |
 | `method`      | String. The method used for calculation: "Cosine", "Hamming", "Euclidean", or "Jaccard". |
@@ -54,21 +54,14 @@ calculate_distance(individual1, individual2, method)
 
 This function determines adopters in a network using one of three centrality measures: counts, betweenness, or closeness.
 
-```{r}
-determine_adopter(
-  total_n,
-  adj_matrix,
-  final_matrix,
-  indices,
-  p_innovators,
-  approach
-)
-```
+### Function
+
+determine_adopter( total_n, adj_matrix, final_matrix, indices, p_innovators, approach )
 
 ### Arguments
 
 |                |                                                                                           |
-|----------------|-------------------------------------------------------------------------------------------|
+|---------------|---------------------------------------------------------|
 | `total_n`      | Numeric scalar. Total number of nodes in the network.                                     |
 | `adj_matrix`   | Numeric matrix. The adjacency matrix representing the network.                            |
 | `final_matrix` | Numeric matrix. An additional matrix related to the network (optional for this function). |
@@ -80,26 +73,14 @@ determine_adopter(
 
 This function identifies adopters across multiple stages based on centrality measures, updates their efficacy, and adjusts data for non-adopters.
 
-```{r}
-detect_adopters(
-  num_agents,
-  adj_matrix,
-  final_matrix,
-  original_data,
-  stages,
-  stages_name,
-  ps_theory,
-  adoption_efficacy,
-  non_adoption_efficacy,
-  approach,
-  p_prior
-)
-```
+### Function
+
+detect_adopters( num_agents, adj_matrix, final_matrix, original_data, stages, stages_name, ps_theory, adoption_efficacy, non_adoption_efficacy, approach, p_prior )
 
 ### Arguments
 
 |                         |                                                                                 |
-|-------------------------|---------------------------------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `num_agents`            | Numeric scalar. Total number of agents in the network.                          |
 | `adj_matrix`            | Numeric matrix. Adjacency matrix representing the network.                      |
 | `final_matrix`          | Numeric matrix. Additional network-related matrix (optional for this function). |
