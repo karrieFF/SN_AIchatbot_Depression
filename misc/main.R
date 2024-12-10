@@ -2,7 +2,9 @@ library(doipkg)
 library(igraph) #use to create graph
 library(animation) #use to create GIF file
 library(Rcpp)
+
 sourceCpp("rcpp.cpp")
+
 
 ########################################
 #--------------------Step. 1 Select the best approach to detect adopters
@@ -34,7 +36,6 @@ results <- run_simulation_cpp(
 
 # View results
 print(results)
-
 
 ########################################################
 #-------------------Step 2. Use the good metric to visualize the network

@@ -17,3 +17,99 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(doipkg)
 ```
+
+This package can be used to simulate how social network intervention can affect a specific outcome by adopting digital technology.
+
+# Fun 1: Simulate social network data
+
+This function generates a dataset with multiple characteristics and creates an adjacent matrix to generate a network.
+
+```{r}
+generate_network_matrices(num_agents)
+```
+
+### Arguments
+
+|              |                                                              |
+|--------------|--------------------------------------------------------------|
+| `num_agents` | A numeric scalar indicates the number of agents to generate. |
+
+## Fun 2: Calculate the distance between agents
+
+Computes the similarity or distance between two numeric vectors based on a specified method.
+
+```{r}
+calculate_distance(individual1, individual2, method)
+```
+
+### Arguments
+
+|               |                                                                                          |
+|---------------|------------------------------------------------------------------------------------------|
+| `individual1` | Numeric vector. The first individual.                                                    |
+| `individual2` | Numeric vector. The second individual.                                                   |
+| `method`      | String. The method used for calculation: "Cosine", "Hamming", "Euclidean", or "Jaccard". |
+
+## Fun 3: Determine adopters
+
+This function determines adopters in a network using one of three centrality measures: counts, betweenness, or closeness.
+
+```{r}
+determine_adopter(
+  total_n,
+  adj_matrix,
+  final_matrix,
+  indices,
+  p_innovators,
+  approach
+)
+```
+
+### Arguments
+
+|                |                                                                                           |
+|----------------|-------------------------------------------------------------------------------------------|
+| `total_n`      | Numeric scalar. Total number of nodes in the network.                                     |
+| `adj_matrix`   | Numeric matrix. The adjacency matrix representing the network.                            |
+| `final_matrix` | Numeric matrix. An additional matrix related to the network (optional for this function). |
+| `indices`      | Numeric vector. Indices of the nodes to consider for adoption.                            |
+| `p_innovators` | Numeric scalar. Proportion of total nodes to be classified as innovators.                 |
+| `approach`     | String. The centrality method to use: "counts", "betweeness", or "closeness".             |
+
+## Fun 4: Simulate the process for determining adopters at different diffusion process
+
+This function identifies adopters across multiple stages based on centrality measures, updates their efficacy, and adjusts data for non-adopters.
+
+```{r}
+detect_adopters(
+  num_agents,
+  adj_matrix,
+  final_matrix,
+  original_data,
+  stages,
+  stages_name,
+  ps_theory,
+  adoption_efficacy,
+  non_adoption_efficacy,
+  approach,
+  p_prior
+)
+```
+
+### Arguments
+
+|                         |                                                                                 |
+|-------------------------|---------------------------------------------------------------------------------|
+| `num_agents`            | Numeric scalar. Total number of agents in the network.                          |
+| `adj_matrix`            | Numeric matrix. Adjacency matrix representing the network.                      |
+| `final_matrix`          | Numeric matrix. Additional network-related matrix (optional for this function). |
+| `original_data`         | Numeric matrix. Data containing baseline and other attributes for agents.       |
+| `stages`                | List. A sequence of stages for the adoption process.                            |
+| `stages_name`           | List. Names corresponding to each stage.                                        |
+| `ps_theory`             | List. Proportions of adopters for each stage.                                   |
+| `adoption_efficacy`     | List. Efficacy values added for adopters at each stage.                         |
+| `non_adoption_efficacy` | Numeric scalar. Efficacy value for non-adopters.                                |
+| `approach`              | String. Centrality measure approach: "counts", "betweeness", or "closeness".    |
+| `p_prior`               | Numeric scalar. Proportion adjustment for subsequent stages.                    |
+
+### 
