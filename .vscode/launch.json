@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/u6039184/Documents/software/SN_AIchatbot_Physical_Activity",
+      "program": "/Users/u6039184/Documents/software/SN_AIchatbot_Physical_Activity/build/Debug/outDebug"
+    }
+  ]
+}
