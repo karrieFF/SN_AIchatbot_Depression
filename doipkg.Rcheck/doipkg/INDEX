@@ -1,5 +1,0 @@
-calculate_distance      Calculate Distance Between Two Agents
-detect_adopters         Detect Adopters in the Diffusion Process
-determine_adopter       Get adopters
-generate_network_matrices
-                        Generate network data
