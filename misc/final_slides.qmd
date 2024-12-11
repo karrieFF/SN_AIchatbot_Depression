@@ -1,11 +1,11 @@
 ---
-title: "Simulated Social network interventions to promote physical activity through increasing AI chatbot adoption"
+title: "Simulate Social network interventions to promote physical activity through AI chatbot"
 subtitle: "For PHS 7045"
 author: "Lingyi Fu"
 format: 
   revealjs:
     embed-resources: true
-    incremental: true     
+    incremental: false    
     slide-number: true      
     transition: fade        
     code-line-numbers: true
@@ -15,7 +15,7 @@ header-includes: |
   <style>
     h1.title { font-size: 60px; text-align: center; }  
     h2.subtitle { font-size: 10px; text-align: center; } 
-    body { font-size: 24px; }  
+    body { font-size: 18px; }  
     pre { font-size: 18px; }
     code { font-size: 16px; } 
     ul, li { font-size: 35px; }
@@ -24,116 +24,133 @@ header-includes: |
 
 ## Background
 
-#### AI Chatbot for Increasing Physical Activity
+#### AI Chatbot Increases Physical Activity
 
 ::: incremental
 -   Artificial intelligence (AI)-driven Chatbots (AI chatbots), developed using natural language processing techniques, are capable of conversing with humans in a natural language format.
 
--   AI chatbots have been used to increase physical activity recently.
+-   AI chatbots have recently been used to increase physical activity.
 
--   The adoption of an AI Chatbot is a critical factor that influences the efficacy of using an AI chatbot to increase physical activity (PA). A high adoption can promote a high level of PA.
+-   The adoption of an AI chatbot is a critical factor that influences the efficacy of using an AI chatbot to increase physical activity (PA). A high adoption can promote a high level of PA.
 :::
 
 ------------------------------------------------------------------------
 
-#### Social network intervention may help increase the adoption of AI chatbot
+#### Social Network Intervention Helps Increase the Adoption of AI chatbot
 
 -   Diffusion of Innovation (DOI) theory is a social science theory that explains how new ideas, products, or behaviors spread through a population over time.
 
--   This theory emphasizes the effect of the social networks on the adoption of an innovation.
+-   This theory emphasizes the effect of social networks on the adoption of an innovation (e.g., AI chatbot).
 
--   Five stages of the population adopting an innovation.
+------------------------------------------------------------------------
 
-    -   ![](misc/pdf picture/Theoretical diffusion process.png)
+#### Social Network Intervention Helps Increase the Adoption of AI chatbot
 
-    #### Widely used centrality to determine the adopters at different stages
+-   Five stages of the population adopting an innovation. (e.g., AI chatbot).
 
-    #### 1. Degree Centrality
+    ![](pdf%20picture/Theoretical%20diffusion%20process.png)
 
-    ![](images/clipboard-1290019631.png)
+------------------------------------------------------------------------
 
-    #### 2. Betweenness Centrality
+#### Centrality metrics
 
-    ![](images/clipboard-471605985.png)
+::: incremental
+-   Degree Centrality: measure the number of links incident upon an agent.
 
-    #### 3. Closeness Centrality
-
-    ![](images/clipboard-1443945547.png)
+-   Closeness Centrality: measure how close a node is to all other nodes in a network.
+:::
 
 ------------------------------------------------------------------------
 
 ## Project Aim
 
-This project aims to compare which approach is better to determine the adopters at each stage thus to achieve higher effectiveness in increasing physical activity.
+Compare the effectiveness of two metrics, degree centrality and closeness centrality, in identifying adopters at each stage to promote increased physical activity.
 
 ------------------------------------------------------------------------
 
-## Overview of Midterm
+## New Features
 
--   Create the adjacent matrix to generate network based on correlation matrix between agents (this is not really fit with the data types that we always collect, I revised this in this final).
+![](images/clipboard-3832808585.png){width="853"}
 
--   Centrality of the nodes were determined based on the sum of the correlation coefficients that a given node with its connected nodes.
+------------------------------------------------------------------------
 
--   Innovators were determined based on the centrality only. The adopters at the later stages were determined based on two criteria:
+![](images/clipboard-2563850746.png)
 
-    \(1\) nodes that were connected with prior adopters
-
-    \(2\) centrality of the nodes
-
--   Number of adopters were determined based on the DOI theory strictly. That means all agents in the network will adopt the digital technology at the end. This might not be suitable to the real situation.
-
--   Visualize the diffusion process of adopting AI chatbot.
-
-## New features
-
--   Create the adjacent matrix to generate network based on simulated agents with demographic characteristics such as age, gender, and and social-economic status.
-
--   Two centrality (i.e., degree and closeness) for determining the adopters will be calculated and compared using simulation approach (Rcpp).
-
--   Except for the stage1 (innovators), the adoption rate of each stage is formulated as:
-
-    Adoption_rate = p_doi\*p_chatbot
-
-    p_doi = c(0.025, 0.135, 0.34, 0.34, 0.16); p_chatbot = 0.45
-
--   Calculate the effectiveness in promoting physical activity after adopting AI chatbot or non-adopting AI chatbot.
-
--   Visualize the diffusion process of adopting AI chatbot and also the corresponding change of physical activity.
+------------------------------------------------------------------------
 
 ## Examples
 
-**Step 1. For each simulation**
+### **Compare the effectiveness of two metrics**
 
--   Simulate data
+[Step 1. Simulate network data]{.underline}
 
-    -   num_agents \<- 100
+![](images/clipboard-4128174760.png)
 
-    -   Demongraphic characteristics of Agents: gender, age, socio_economic_status, baseline_PA
+------------------------------------------------------------------------
 
-```{=html}
-<!-- -->
-```
--   Simulate the diffusion process (Adoption rate at each stage)
+-   Number of agents: 100
 
-    -   p_prior \<- 0.45
+-   **Connection** between two agents: Random connection
 
-    -   ps_theory \<- c(0.025, 0.135, 0.34, 0.34, 0.16)
+-   **Distance** between two agents: Euclidean distance
 
--   Effectivness of promoting PA for adopters and non-adopters
+$$
+d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
+$$
 
-    -   adoption_efficacy \<- c(1500, 1200, 900, 600, 300)
+Where:
 
-    -   non_adoption_efficacy \<- 250
+-   ( (x1, y1) ) are the coordinates of the first point.
 
-**Step 2. Using Rcpp to run 100000 simulations to compare the effectiveness of two approaches**
+-   ( (x2, y2) ) are the coordinates of the second point.
 
-```         
-Propability that degree centrality performs better: 0.47121  
-Probability that closeness centrality performs better: 0.47223
-```
+-   ( d ) is the distance between ( (x1, y1) ) and ( (x2, y2) ).
 
-**Step 3. Based on the best performed centrality metrics, visualize the diffusion process**
+------------------------------------------------------------------------
 
-![](doipkg/AI chatbot diffusion process.gif)
+[Step 2. Simulate the diffusion process.]{.underline}
 
-## 
+The agents whose **centrality** is at the **top N** will be selected as the adopters.
+
+::: incremental
+**Centrality**: Two approaches for determining the centrality of agents
+
+-   Degree Centrality
+-   Closeness Centrality
+:::
+
+------------------------------------------------------------------------
+
+**Top N:** Number of adopters at each stage:
+
+-   Innovators: num_agents\*p_theory
+
+-   Adopters at the following stage: num_agents\*0.45\*p_theory
+
+![](pdf%20picture/Theoretical%20diffusion%20process.png){width="633"}
+
+------------------------------------------------------------------------
+
+[Step 3. Calculate and compare the effectiveness of two metrics]{.underline}
+
+-   Assign the increased number of steps for adopters at different stages (i.e., 1500, 1200, 900, 600, 300) and non-adopters (i.e., 250).
+
+-   Compare the average value of follow-up PA of the two approaches (i.e., Degree Centrality, Closeness Centrality).
+
+    -   If: degree_mean_PA \> closeness_mean_PA, degree + 1
+
+    -   else: closeness + 1
+
+------------------------------------------------------------------------
+
+### **Run 100000 simulations using rcpp**
+
+-   The probability that degree centrality performs better: 0.47121
+
+-   The probability that closeness centrality performs better: 0.47223
+
+------------------------------------------------------------------------
+
+### **Visualize the diffusion process based on the closeness centrality**
+
+![](ai_chatbot_diffusion_process.gif)

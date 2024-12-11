@@ -2,8 +2,7 @@ library(doipkg)
 library(igraph) #use to create graph
 library(animation) #use to create GIF file
 
-sourceCpp("rcpp.cpp")
-
+#sourceCpp("rcpp.cpp")
 
 ########################################
 #--------------------Step. 1 Select the best approach to detect adopters
