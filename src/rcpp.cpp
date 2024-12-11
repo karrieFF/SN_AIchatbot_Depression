@@ -5,12 +5,12 @@ using namespace Rcpp;
 List run_simulation_cpp(
     int num_agents,
     int n_simulations,
-    CharacterVector methods,
-    IntegerVector stages,
-    CharacterVector stages_name,
+    Rcpp::CharacterVector methods,
+    Rcpp::IntegerVector stages,
+    Rcpp::CharacterVector stages_name,
     double p_prior,
-    NumericVector ps_theory,
-    NumericVector adoption_efficacy,
+    Rcpp::NumericVector ps_theory,
+    Rcpp::NumericVector adoption_efficacy,
     double non_adoption_efficacy
 ) {
   // Initialize counters

@@ -1,69 +1,107 @@
-library(doipkg)
-library(igraph) #use to create graph
-library(animation) #use to create GIF file
+---
+title: "DOI-package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DOI-package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
-sourceCpp("rcpp.cpp")
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
 
+# doipkg
 
-########################################
-#--------------------Step. 1 Select the best approach to detect adopters
-########################################
+<!-- badges: start -->
 
-#----------parameters
-num_agents <- 100
-method <- c("counts",  "closeness")
-stages <- c(1, 2, 3, 4, 5) # five stages
-stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
-p_prior <- 0.45
-ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
-adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
-non_adoption_efficacy <- 250 #unit：step, increase only 250, how to set this
-n_simulations <- 100000
+[![CRAN status](https://www.r-pkg.org/badges/version/doipkg)](https://CRAN.R-project.org/package=doipkg) [![R-CMD-check.yaml](https://github.com/karrieFF/SN_AIchatbot_Physical_Activity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/karrieFF/SN_AIchatbot_Physical_Activity/actions/workflows/R-CMD-check.yaml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/karrieFF/SN_AIchatbot_Physical_Activity/blob/main/LICENSE.md)
 
-results <- run_simulation(num_agents,
-                                  n_simulations,
-                                  method,
-                                  stages,
-                                  stages_name,
-                                  p_prior,
-                                  ps_theory,
-                                  adoption_efficacy,
-                                  non_adoption_efficacy)
+<!-- badges: end -->
 
-########################################################
-#-------------------Step 2. Use the good metric to visualize the network
-#######################################################
+This package can be used to simulate how social network intervention can affect a specific outcome by adopting digital technology.
 
-data <- doipkg::generate_network_matrices(num_agents)
+## Installation
+
+You can install the development version of doipkg from [GitHub](https://github.com/) with:
+
+``` r
+devtools::install_github("SN_AIchatbot_Physical_Activity/doipkg")
+```
+
+## Examples
+
+This example is to run social network simulation to determine which approach for selecting innovators can help achieve large effectiveness.
+
+#### Simulate social network data
+
+This function generates a dataset with multiple characteristics and creates an adjacent matrix to generate a network.
+
+``` r
+install.packages("doipkg")
+
+#generate the data for network analysis
+data <- generate_network_matrices(
+  num_agents = 100) 
+
+data
+```
+
+#### Calculate the distance between two agents.
+
+This function helps you calculate the distance between two agents based on the agents' characteristics.
+
+``` r
+
+num_agents = 100
+
+similarity_matrix <- matrix(0, nrow = num_agents, ncol = num_agents)
 
 original_data <- data$original_data
-adj_matrix <- data$adjacency_matrix
-similarity_matrix <- data$similarity_matrix
-final_matrix <- data$final_matrix
 
-#select closeness as the metrics
-approach <- "closeness"
-original_data[ ,approach] <- NaN
+individual1 <- as.numeric(original_data[i1, -1])
+individual2 <- as.numeric(original_data[i2, -1])
+      
+similarity_matrix[i1, i2] <- calculate_distance(
+  individual1, 
+  individual2, 
+  method = "Euclidean") #Cosine, Hamming, Euclidean, Jaccard
+```
 
-output <- doipkg::detect_adopters(
-  num_agents,
-  adj_matrix,
-  final_matrix,
-  original_data,
-  stages,
-  stages_name,
-  ps_theory,
-  adoption_efficacy,
-  non_adoption_efficacy,
-  approach,
-  p_prior
+#### Calculate the effectiveness of adoption
+
+This function helps you output the change of outcome after the social network intervention.
+
+``` r
+
+output <- detect_adopters(
+  num_agents = 100 ,
+  adj_matrix = data$adjacency_matrix,
+  final_matrix = data$final_matrix,
+  original_data = data$original_data,
+  stages = c(1, 2, 3, 4, 5),
+  stages_name = c("stage1", "stage2", "stage3", "stage4", "stage5"),
+  ps_theory = c(0.025, 0.135, 0.34, 0.34, 0.16),
+  adoption_efficacy = c(1500, 1200, 900, 600, 300),
+  non_adoption_efficacy = 250,
+  approach = 'closeness',
+  p_prior = 0.45
 )
+```
 
+#### Plot the network
+
+``` r
 final_data <- output$output_data
 
 min_val <- min(similarity_matrix)
 max_val <- max(similarity_matrix)
 standardized_distance_matrix <- (similarity_matrix - min_val) / (max_val - min_val)
+
 cormatrix <- 1 / standardized_distance_matrix  # Convert to similarity matrix
 cormatrix[lower.tri(cormatrix)] <- t(cormatrix)[lower.tri(cormatrix)]  # Make symmetric
 diag(cormatrix) <- 0  # Set diagonal to 0
@@ -71,12 +109,8 @@ diag(cormatrix) <- 0  # Set diagonal to 0
 # Ensure adjacency matrix is undirected
 adj_matrix[upper.tri(adj_matrix)] <- FALSE  # Remove upper triangle to ensure symmetry
 edge_weights <- cormatrix[adj_matrix]  # Extract edge weights
-
-# Create the graph object
-initial_graph <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
-
-# Assign edge weights
-E(initial_graph)$weight <- edge_weights
+initial_graph <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE) # Create the graph object
+E(initial_graph)$weight <- edge_weights # Assign edge weights
 
 # Define the layout
 fixed_layout <- layout_with_graphopt(initial_graph)  # Repulsion layout for better spacing
@@ -128,11 +162,11 @@ plot(
   vertex.label.cex = V(initial_graph)$label.cex,  # Label font size
   vertex.label.dist = V(initial_graph)$label.dist  # Label distance
 )
+```
 
-############################################
-#-------Step 3. Visualize the simulation process
-###########################################
+#### Visualize the diffusion process
 
+``` r
 # Define node frame colors and phase colors
 node_frame_colors <- rep("white", vcount(initial_graph))  # Default frame color
 node_size <- rep(10, vcount(initial_graph))
@@ -181,4 +215,34 @@ saveGIF({
     )
   }
 }, movie.name = "ai_chatbot_diffusion_process.gif", interval = 4, ani.width = 1000, ani.height = 800)
+```
 
+#### Multiple simulations to compare the effectiveness of different approach
+
+``` r
+num_agents <- 100
+method <- c("counts",  "closeness")
+stages <- c(1, 2, 3, 4, 5) # five stages
+stages_name <- c("stage1", "stage2", "stage3", "stage4", "stage5")
+p_prior <- 0.45
+ps_theory <- c(0.025, 0.135, 0.34, 0.34, 0.16) #probability of adoption at each stage based on DOI
+adoption_efficacy <- c(1500, 1200, 900, 600, 300) #unit: step
+non_adoption_efficacy <- 250 #unit：step, increase only 250, how to set this
+n_simulations <- 100000
+
+results <- run_simulation(num_agents,
+                                  n_simulations,
+                                  method,
+                                  stages,
+                                  stages_name,
+                                  p_prior,
+                                  ps_theory,
+                                  adoption_efficacy,
+                                  non_adoption_efficacy)
+
+-final_pro_counts
+0.47263
+
+-final_pro_closeness
+0.47067
+```
