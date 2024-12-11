@@ -1,5 +1,8 @@
 ---
 output: github_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,25 +19,44 @@ knitr::opts_chunk$set(
 # epiworldR
 
 <!-- badges: start -->
-[![CRAN status](https://www.r-pkg.org/badges/version/epiworldR)](https://CRAN.R-project.org/package=epiworldR)
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/epiworldR)](https://CRAN.R-project.org/package=epiworldR)
 [![R-CMD-check](https://github.com/UofUEpiBio/epiworldR/actions/workflows/r.yml/badge.svg)](https://github.com/UofUEpiBio/epiworldR/actions/workflows/r.yml)
-[![CRANlogs downloads](https://cranlogs.r-pkg.org/badges/grand-total/epiworldR)](https://cran.r-project.org/package=epiworldR)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/UofUEpiBio/epiworldR/blob/master/LICENSE.md)
+[![CRANlogs
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/epiworldR)](https://cran.r-project.org/package=epiworldR)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/UofUEpiBio/epiworldR/blob/master/LICENSE.md)
 [![codecov](https://codecov.io/gh/UofUEpiBio/epiworldR/graph/badge.svg?token=ZB8FVLI7GN)](https://app.codecov.io/gh/UofUEpiBio/epiworldR)
+
 <!-- badges: end -->
 
-This R package is a wrapper of the C++ library [epiworld](https://github.com/UofUEpiBio/epiworld){target="_blank"}. It provides a general framework for modeling disease transmission using [agent-based models](https://en.wikipedia.org/w/index.php?title=Agent-based_model&oldid=1153634802){target="_blank"}. Some of the main features include:
+This R package is a wrapper of the C++ library
+[epiworld](https://github.com/UofUEpiBio/epiworld){target="_blank"}. It
+provides a general framework for modeling disease transmission using
+[agent-based
+models](https://en.wikipedia.org/w/index.php?title=Agent-based_model&oldid=1153634802){target="_blank"}.
+Some of the main features include:
 
-
-- Fast simulation with an average of 30 million agents/day per second.
-- One model can include multiple diseases.
-- Policies (tools) can be multiple and user-defined.
-- Transmission can be a function of agents' features.
-- Out-of-the-box parallelization for multiple simulations.
+-   Fast simulation with an average of 30 million agents/day per second.
+-   One model can include multiple diseases.
+-   Policies (tools) can be multiple and user-defined.
+-   Transmission can be a function of agents' features.
+-   Out-of-the-box parallelization for multiple simulations.
 
 From the package's description:
 
-> A flexible framework for Agent-Based Models (ABM), the epiworldR package provides methods for prototyping disease outbreaks and transmission models using a C++ backend, making it very fast. It supports multiple epidemiological models, including the Susceptible-Infected-Susceptible (SIS), Susceptible-Infected-Removed (SIR), Susceptible-Exposed-Infected-Removed (SEIR), and others, involving arbitrary mitigation policies and multiple-disease models. Users can specify infectiousness/susceptibility rates as a function of agents’ features, providing great complexity for the model dynamics. Furthermore, epiworldR is ideal for simulation studies featuring large populations.
+> A flexible framework for Agent-Based Models (ABM), the epiworldR
+> package provides methods for prototyping disease outbreaks and
+> transmission models using a C++ backend, making it very fast. It
+> supports multiple epidemiological models, including the
+> Susceptible-Infected-Susceptible (SIS), Susceptible-Infected-Removed
+> (SIR), Susceptible-Exposed-Infected-Removed (SEIR), and others,
+> involving arbitrary mitigation policies and multiple-disease models.
+> Users can specify infectiousness/susceptibility rates as a function of
+> agents’ features, providing great complexity for the model dynamics.
+> Furthermore, epiworldR is ideal for simulation studies featuring large
+> populations.
 
 Current available models:
 
@@ -48,7 +70,8 @@ sprintf("%i. `%s`\n", 1:length(models), models) |>
 
 ## Installation
 
-You can install the development version of epiworldR from [GitHub](https://github.com/) with:
+You can install the development version of epiworldR from
+[GitHub](https://github.com/) with:
 
 ``` r
 devtools::install_github("UofUEpiBio/epiworldR")
@@ -56,20 +79,28 @@ devtools::install_github("UofUEpiBio/epiworldR")
 
 Or from CRAN
 
-```r
+``` r
 install.packages("epiworldR")
 ```
 
 # Examples
 
-This R package includes several popular epidemiological models, including
+This R package includes several popular epidemiological models,
+including
 [SIS](https://en.wikipedia.org/w/index.php?title=Compartmental_models_in_epidemiology&oldid=1155757336#Variations_on_the_basic_SIR_model){target="_blank"},
-[SIR](https://en.wikipedia.org/w/index.php?title=Compartmental_models_in_epidemiology&oldid=1155757336#The_SIR_model){target="_blank"}, and
-[SEIR](https://en.wikipedia.org/w/index.php?title=Compartmental_models_in_epidemiology&oldid=1155757336#The_SEIR_model){target="_blank"} using either a fully connected graph (similar to a compartmental model) or a user-defined network.
+[SIR](https://en.wikipedia.org/w/index.php?title=Compartmental_models_in_epidemiology&oldid=1155757336#The_SIR_model){target="_blank"},
+and
+[SEIR](https://en.wikipedia.org/w/index.php?title=Compartmental_models_in_epidemiology&oldid=1155757336#The_SEIR_model){target="_blank"}
+using either a fully connected graph (similar to a compartmental model)
+or a user-defined network.
 
 ## SIR model using a random graph
 
-This Susceptible-Infected-Recovered model features a population of 100,000 agents simulated in a small-world network. Each agent is connected to ten other agents. One percent of the population has the virus, with a 70% chance of transmission. Infected individuals recover at a 0.3 rate:
+This Susceptible-Infected-Recovered model features a population of
+100,000 agents simulated in a small-world network. Each agent is
+connected to ten other agents. One percent of the population has the
+virus, with a 70% chance of transmission. Infected individuals recover
+at a 0.3 rate:
 
 ```{r example}
 library(epiworldR)
@@ -99,7 +130,11 @@ plot_incidence(sir)
 
 ## SEIR model with a fully connected graph
 
-The SEIR model is similar to the SIR model but includes an exposed state. Here, we simulate a population of 10,000 agents with a 0.01 prevalence, a 0.6 transmission rate, a 0.5 recovery rate, and 7 days-incubation period. The population is fully connected, meaning agents can transmit the disease to any other agent:
+The SEIR model is similar to the SIR model but includes an exposed
+state. Here, we simulate a population of 10,000 agents with a 0.01
+prevalence, a 0.6 transmission rate, a 0.5 recovery rate, and 7
+days-incubation period. The population is fully connected, meaning
+agents can transmit the disease to any other agent:
 
 ```{r seir-conn}
 model_seirconn <- ModelSEIRCONN(
@@ -138,18 +173,18 @@ head(plot(repnum))
 head(plot_generation_time(model_seirconn))
 ```
 
-
 ## SIR Logit
 
-This model provides a more complex transmission and recovery pattern based
-on agents' features. With it, we can reflect co-morbidities that could change
-the probability of infection and recovery. Here, we simulate a population
-including a dataset with two features: an intercept and a binary variable
-`Female`. The probability of infection and recovery are functions of the intercept and
-the `Female` variables. The following code simulates a population of 100,000 agents
-in a small-world network. Each agent is connected to eight other agents. One
-percent of the population has the virus, with an 80% chance of transmission.
-Infected individuals recover at a 0.3 rate:
+This model provides a more complex transmission and recovery pattern
+based on agents' features. With it, we can reflect co-morbidities that
+could change the probability of infection and recovery. Here, we
+simulate a population including a dataset with two features: an
+intercept and a binary variable `Female`. The probability of infection
+and recovery are functions of the intercept and the `Female` variables.
+The following code simulates a population of 100,000 agents in a
+small-world network. Each agent is connected to eight other agents. One
+percent of the population has the virus, with an 80% chance of
+transmission. Infected individuals recover at a 0.3 rate:
 
 ```{r logit-model}
 # Simulating a population of 100,000 agents
@@ -199,7 +234,11 @@ get_agents(model_logit)
 
 ## Transmission network
 
-This example shows how we can draw a transmission network from a simulation. The following code simulates a population of 500 agents in a small-world network. Each agent is connected to ten other agents. One percent of the population has the virus, with a 50% chance of transmission. Infected individuals recover at a 0.5 rate:
+This example shows how we can draw a transmission network from a
+simulation. The following code simulates a population of 500 agents in a
+small-world network. Each agent is connected to ten other agents. One
+percent of the population has the virus, with a 50% chance of
+transmission. Infected individuals recover at a 0.5 rate:
 
 ```{r transmission-net}
 # Creating a SIR model
@@ -229,7 +268,12 @@ nplot(x, edge.curvature = 0, edge.color = "gray", skip.vertex = TRUE)
 
 ## Multiple simulations
 
-`epiworldR` supports running multiple simulations using the `run_multiple` function. The following code simulates 50 SIR models with 1000 agents each. Each agent is connected to ten other agents. One percent of the population has the virus, with a 90% chance of transmission. Infected individuals recover at a 0.1 rate. The results are saved in a `data.frame`:
+`epiworldR` supports running multiple simulations using the
+`run_multiple` function. The following code simulates 50 SIR models with
+1000 agents each. Each agent is connected to ten other agents. One
+percent of the population has the virus, with a 90% chance of
+transmission. Infected individuals recover at a 0.1 rate. The results
+are saved in a `data.frame`:
 
 ```{r multiple-example}
 model_sir <- ModelSIRCONN(
@@ -258,11 +302,11 @@ plot(ans$reproductive)
 
 # Tutorials
 
-- The virtual INSNA Sunbelt 2023 session can be found here: https://github.com/UofUEpiBio/epiworldR-workshop/tree/sunbelt2023-virtual
+-   The virtual INSNA Sunbelt 2023 session can be found here:
+    <https://github.com/UofUEpiBio/epiworldR-workshop/tree/sunbelt2023-virtual>
 
-- The in-person INSNA Sunbelt 2023 session can be found here:
-https://github.com/UofUEpiBio/epiworldR-workshop/tree/sunbetl2023-inperson
-
+-   The in-person INSNA Sunbelt 2023 session can be found here:
+    <https://github.com/UofUEpiBio/epiworldR-workshop/tree/sunbetl2023-inperson>
 
 # Citation
 
@@ -274,26 +318,34 @@ citation("epiworldR")
 
 # Existing Alternatives
 
-Several alternatives to `epiworldR` exist and provide researchers with a range of options, each with its own unique features and strengths, enabling the exploration and analysis of infectious disease dynamics through agent-based modeling. Below is a manually curated table of existing alternatives, including ABM [@ABM], abmR [@abmR], cystiSim [@cystiSim], villager [@villager], and RNetLogo [@RNetLogo].
+Several alternatives to `epiworldR` exist and provide researchers with a
+range of options, each with its own unique features and strengths,
+enabling the exploration and analysis of infectious disease dynamics
+through agent-based modeling. Below is a manually curated table of
+existing alternatives, including ABM [@ABM], abmR [@abmR], cystiSim
+[@cystiSim], villager [@villager], and RNetLogo [@RNetLogo].
 
-| Package                                                                     | Multiple Viruses | Multiple Tools | Multiple Runs | Global Actions | Built-In Epi Models |  Dependencies                                                                                             | Activity                                                                                                               |
-|:--------|:--------|:--------|:--------|:--------|---------|:--------|:--------|
-| [**epiworldR**](https://cran.r-project.org/package=epiworldR)               | yes              | yes            | yes           | yes            | yes                 | [![status](https://tinyverse.netlify.com/badge/epiworldR)](https://CRAN.R-project.org/package=epiworldR) | [![Activity](https://img.shields.io/github/last-commit/UofUEpiBio/epiworldR)](https://github.com/UofUEpiBio/epiworldR) |
-| [**ABM**](https://cran.r-project.org/package=ABM)                           | \-               | \-             | \-            | yes            | yes                 | [![status](https://tinyverse.netlify.com/badge/ABM)](https://CRAN.R-project.org/package=ABM)             | [![Activity](https://img.shields.io/github/last-commit/junlingm/ABM)](https://github.com/junlingm/ABM)                 |
-| [**abmR**](https://cran.r-project.org/package=abmR)                         | \-               | \-             | yes           | \-             | \-                  | [![status](https://tinyverse.netlify.com/badge/abmR)](https://CRAN.R-project.org/package=abmR)           | [![Activity](https://img.shields.io/github/last-commit/bgoch5/abmR)](https://github.com/bgoch5/abmR)                   |
-| [**cystiSim**](https://cran.r-project.org/package=cystiSim)                 | \-               | yes            | yes           | \-             | \-                  | [![status](https://tinyverse.netlify.com/badge/cystiSim)](https://CRAN.R-project.org/package=cystiSim)   | [![Activity](https://img.shields.io/github/last-commit/brechtdv/cystiSim)](https://github.com/brechtdv/cystiSim)       |
-| [**villager**](https://cran.r-project.org/package=villager)                 | \-               | \-             | \-            | yes            | \-                  | [![status](https://tinyverse.netlify.com/badge/villager)](https://CRAN.R-project.org/package=villager)   | [![Activity](https://img.shields.io/github/last-commit/zizroc/villager)](https://github.com/zizroc/villager)           |
-| [**RNetLogo**](https://cran.r-project.org/package=RNetLogo) | \-               | yes            | yes           | yes            | \-                  | [![status](https://tinyverse.netlify.com/badge/RNetLogo)](https://CRAN.R-project.org/package=RNetLogo)   | [![Activity](https://img.shields.io/github/last-commit/cran/RNetLogo)](https://github.com/cran/RNetLogo)               |
-
+| Package                                                       | Multiple Viruses | Multiple Tools | Multiple Runs | Global Actions | Built-In Epi Models | Dependencies                                                                                             | Activity                                                                                                               |
+|:--------------------------------------------------------------|:-----------------|:---------------|:--------------|:---------------|---------------------|:---------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
+| [**epiworldR**](https://cran.r-project.org/package=epiworldR) | yes              | yes            | yes           | yes            | yes                 | [![status](https://tinyverse.netlify.com/badge/epiworldR)](https://CRAN.R-project.org/package=epiworldR) | [![Activity](https://img.shields.io/github/last-commit/UofUEpiBio/epiworldR)](https://github.com/UofUEpiBio/epiworldR) |
+| [**ABM**](https://cran.r-project.org/package=ABM)             | \-               | \-             | \-            | yes            | yes                 | [![status](https://tinyverse.netlify.com/badge/ABM)](https://CRAN.R-project.org/package=ABM)             | [![Activity](https://img.shields.io/github/last-commit/junlingm/ABM)](https://github.com/junlingm/ABM)                 |
+| [**abmR**](https://cran.r-project.org/package=abmR)           | \-               | \-             | yes           | \-             | \-                  | [![status](https://tinyverse.netlify.com/badge/abmR)](https://CRAN.R-project.org/package=abmR)           | [![Activity](https://img.shields.io/github/last-commit/bgoch5/abmR)](https://github.com/bgoch5/abmR)                   |
+| [**cystiSim**](https://cran.r-project.org/package=cystiSim)   | \-               | yes            | yes           | \-             | \-                  | [![status](https://tinyverse.netlify.com/badge/cystiSim)](https://CRAN.R-project.org/package=cystiSim)   | [![Activity](https://img.shields.io/github/last-commit/brechtdv/cystiSim)](https://github.com/brechtdv/cystiSim)       |
+| [**villager**](https://cran.r-project.org/package=villager)   | \-               | \-             | \-            | yes            | \-                  | [![status](https://tinyverse.netlify.com/badge/villager)](https://CRAN.R-project.org/package=villager)   | [![Activity](https://img.shields.io/github/last-commit/zizroc/villager)](https://github.com/zizroc/villager)           |
+| [**RNetLogo**](https://cran.r-project.org/package=RNetLogo)   | \-               | yes            | yes           | yes            | \-                  | [![status](https://tinyverse.netlify.com/badge/RNetLogo)](https://CRAN.R-project.org/package=RNetLogo)   | [![Activity](https://img.shields.io/github/last-commit/cran/RNetLogo)](https://github.com/cran/RNetLogo)               |
 
 # Other ABM R packages
 
-You may want to check out other R packages for agent-based modeling: [`ABM`](https://cran.r-project.org/package=ABM){target="_blank"},
+You may want to check out other R packages for agent-based modeling:
+[`ABM`](https://cran.r-project.org/package=ABM){target="_blank"},
 [`abmR`](https://cran.r-project.org/package=abmR){target="_blank"},
 [`cystiSim`](https://cran.r-project.org/package=cystiSim){target="_blank"},
-[`villager`](https://cran.r-project.org/package=villager){target="_blank"}, and
+[`villager`](https://cran.r-project.org/package=villager){target="_blank"},
+and
 [`RNetLogo`](https://cran.r-project.org/package=RNetLogo){target="_blank"}.
 
 ## Code of Conduct
 
-The epiworldR project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+The epiworldR project is released with a [Contributor Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
