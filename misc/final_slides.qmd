@@ -31,7 +31,7 @@ header-includes: |
 
 -   AI chatbots have recently been used to increase physical activity.
 
--   The adoption of an AI chatbot is a critical factor that influences the efficacy of using an AI chatbot to increase physical activity (PA). A high adoption can promote a high level of PA.
+-   The adoption of an AI chatbot is a critical factor.
 :::
 
 ------------------------------------------------------------------------
@@ -55,7 +55,7 @@ header-includes: |
 #### Centrality metrics
 
 ::: incremental
--   Degree Centrality: measure the number of links incident upon an agent.
+-   Degree Centrality: measure the number of links upon an agent in a network.
 
 -   Closeness Centrality: measure how close a node is to all other nodes in a network.
 :::
@@ -70,7 +70,7 @@ Compare the effectiveness of two metrics, degree centrality and closeness centra
 
 ## New Features
 
-![](images/clipboard-3832808585.png){width="853"}
+![](images/clipboard-116291204.png)
 
 ------------------------------------------------------------------------
 
